@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elektronický Laštovica</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+
+    #settings-sidebar {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-open {
+      transform: translateX(0);
+    }
+
+    .sidebar-closed {
+      transform: translateX(100%);
+    }
+    
+.preset-btn-active {
+  background: #e0e7ff !important;
+  border-color: #4f46e5 !important;
+  color: #312e81 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.18), 0 10px 25px rgba(79, 70, 229, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+  </style>
+</head>
+<body class="min-h-screen">
+  <div
+    id="sidebar-overlay"
+    class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-[90] hidden"
+    aria-hidden="true"
+  ></div>
+
+  <div class="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center gap-4">
+      <div class="flex items-center gap-4">
+        <div class="bg-indigo-600 p-3 rounded-xl shadow-lg shadow-indigo-100 text-white">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+            Elekronický Laštovica <span class="text-indigo-600">E.L.A.I.</span>
+          </h1>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+            Kontrola zápisů • zdarma a na počkání
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase border border-emerald-100 items-center gap-2">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          Backend Ready
+        </div>
+        <button
+          id="openSettingsBtn"
+          aria-label="Otevřít nastavení"
+          class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <div class="lg:col-span-5 flex flex-col gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-1 flex flex-col">
+          <div class="flex items-center justify-between mb-4">
+            <label for="inputText" class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em] flex items-center gap-2">
+              <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-indigo-500"></i>
+              Surové poznámky ze schůzky
+            </label>
+          </div>
+
+          <textarea
+            id="inputText"
+            aria-label="Surové poznámky ze schůzky"
+            class="w-full flex-1 min-h-[360px] p-5 bg-slate-50 border border-slate-200 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all custom-scrollbar resize-none leading-relaxed"
+            placeholder="Vložte text..."
+          ></textarea>
+
+          <div class="flex justify-between items-center mt-2 text-[11px] text-slate-400">
+            <span>Doporučeno do 10 000 znaků</span>
+            <span id="inputCounter">0 znaků</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mt-6">
+            <button
+              data-process="zápis"
+              class="process-btn group relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 shadow-md shadow-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              Zápis
+            </button>
+
+            <button
+              data-process="kazuistika"
+              class="process-btn bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+            >
+              <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+              Kazuistika
+            </button>
+
+            <button
+              data-process="kontrola"
+              class="process-btn bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+            >
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              Kontrola
+            </button>
+          </div>
+
+          <div class="mt-4 text-[11px] text-slate-400">
+            Klávesová zkratka: <span class="font-bold text-slate-600">Ctrl + Enter</span> spustí „Zápis“
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="bg-white h-full min-h-[600px] rounded-2xl shadow-sm border border-slate-200 flex flex-col relative overflow-hidden">
+          <div
+            id="loader"
+            class="hidden absolute inset-0 bg-white/90 backdrop-blur-md z-50 flex flex-col items-center justify-center"
+            aria-live="polite"
+            aria-busy="true"
+          >
+            <div class="w-14 h-14 border-4 border-indigo-100 border-t-indigo-600 rounded-full spinner mb-4"></div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+              AI Engine generuje odpověď
+            </p>
+            <button
+              id="cancelBtn"
+              class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider transition"
+            >
+              Zrušit
+            </button>
+          </div>
+
+          <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
+            <span class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">
+              Formátovaný výstup
+            </span>
+
+            <div class="flex items-center gap-2">
+              <button
+                id="clearBtn"
+                class="px-4 py-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-slate-700 transition-all flex items-center gap-2 text-[10px] font-bold uppercase"
+              >
+                <i data-lucide="eraser" class="w-4 h-4"></i>
+                Vyčistit
+              </button>
+
+              <button
+                id="copyBtn"
+                class="px-4 py-2 hover:bg-indigo-50 rounded-lg text-slate-400 hover:text-indigo-600 transition-all flex items-center gap-2 text-[10px] font-bold uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled
+              >
+                <i data-lucide="copy" class="w-4 h-4"></i>
+                Kopírovat
+              </button>
+            </div>
+          </div>
+
+          <div id="output" class="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar bg-white">
+            <div class="h-full flex flex-col items-center justify-center text-slate-300 opacity-60 text-center">
+              <i data-lucide="sparkles" class="w-12 h-12 mb-3"></i>
+              <p class="italic text-sm">Zatím nebyl vygenerován žádný výsledek...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside
+    id="settings-sidebar"
+    class="fixed inset-y-0 right-0 w-80 md:w-96 bg-white shadow-2xl z-[100] border-l border-slate-200 sidebar-closed flex flex-col"
+    aria-hidden="true"
+  >
+    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+      <h2 class="font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wider">
+        <i data-lucide="settings-2" class="w-4 h-4 text-indigo-500"></i>
+        Nastavení AI
+      </h2>
+
+      <button
+        id="closeSettingsBtn"
+        aria-label="Zavřít nastavení"
+        class="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+      <div class="space-y-3">
+        
+<label for="methodology" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+  Doplňkové pokyny k vybranému režimu
+</label>
+
+
+        <textarea
+          id="methodology"
+          class="w-full h-[280px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all custom-scrollbar resize-none"
+          placeholder="Např.: Zdůrazni lhůty, ověřené podklady, návazné kroky nebo stručnější styl..."
+        ></textarea>
+
+        <div class="flex justify-between items-center text-[11px] text-slate-400">
+          <span>Ukládá se automaticky</span>
+          <span id="methodologyCounter">0 znaků</span>
+        </div>
+
+        <p class="text-[10px] text-slate-400 leading-relaxed italic">
+          Zadaná pravidla model dodržuje při každém generování.
+        </p>
+      </div>
+
+      
+<div class="space-y-3">
+  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+    Přednastavené režimy metodiky
+  </label>
+
+  <div class="grid grid-cols-1 gap-2">
+    <button id="presetOneOffBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+      Jednorázová zakázka
+      <div class="text-[11px] text-slate-400 mt-1">Krátký režim bez podrobného mapování</div>
+    </button>
+
+    <button id="presetStandardBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+      Standardní větší zakázka
+      <div class="text-[11px] text-slate-400 mt-1">Střední přísnost od vstupu po hledání řešení</div>
+    </button>
+
+    <button id="presetInsolvencyBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+      Oddlužení – přísný režim
+      <div class="text-[11px] text-slate-400 mt-1">Přísný režim od vstupu až po realizaci řešení</div>
+    </button>
+  </div>
+
+  <p class="text-[10px] text-slate-400 leading-relaxed italic">
+    Po kliknutí se použije interní režim uložený na serveru. Plné znění šablon není v rozhraní vidět.
+  </p>
+</div>
+
+
+      <div class="mt-auto pt-6 border-t border-slate-100">
+        <div class="bg-indigo-50 p-4 rounded-xl">
+          <h4 class="text-[10px] font-bold text-indigo-600 uppercase mb-2">Status systému</h4>
+          <div class="space-y-2">
+            <div class="flex justify-between text-[10px]">
+              <span class="text-indigo-400">Provoz:</span>
+              <span class="font-bold">Backend proxy</span>
+            </div>
+            <div class="flex justify-between text-[10px]">
+              <span class="text-indigo-400">Výstup:</span>
+              <span class="font-bold">Strukturovaný JSON</span>
+            </div>
+            <div class="flex justify-between text-[10px]">
+              <span class="text-indigo-400">Uložení:</span>
+              <span class="font-bold text-emerald-500 uppercase">LocalStorage</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    lucide.createIcons();
+
+    const els = {
+      inputText: document.getElementById("inputText"),
+      inputCounter: document.getElementById("inputCounter"),
+      methodology: document.getElementById("methodology"),
+      methodologyCounter: document.getElementById("methodologyCounter"),
+      output: document.getElementById("output"),
+      loader: document.getElementById("loader"),
+      copyBtn: document.getElementById("copyBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      cancelBtn: document.getElementById("cancelBtn"),
+      processButtons: [...document.querySelectorAll(".process-btn")],
+      sidebar: document.getElementById("settings-sidebar"),
+      overlay: document.getElementById("sidebar-overlay"),
+      openSettingsBtn: document.getElementById("openSettingsBtn"),
+      closeSettingsBtn: document.getElementById("closeSettingsBtn"),
+      presetOneOffBtn: document.getElementById("presetOneOffBtn"),
+presetStandardBtn: document.getElementById("presetStandardBtn"),
+presetInsolvencyBtn: document.getElementById("presetInsolvencyBtn")
+    };
+
+    
+const storageKeys = {
+  input: "caseguard_input",
+  methodology: "caseguard_methodology",
+  lastType: "caseguard_last_type",
+  presetKey: "caseguard_preset_key"
+};
+
+
+    
+const state = {
+  isLoading: false,
+  controller: null,
+  lastResult: null,
+  lastType: localStorage.getItem(storageKeys.lastType) || "zápis",
+  presetKey: localStorage.getItem(storageKeys.presetKey) || "standard"
+};
+
+
+    
+
+    function setLoading(isLoading) {
+      state.isLoading = isLoading;
+      els.loader.classList.toggle("hidden", !isLoading);
+
+      els.processButtons.forEach((btn) => {
+        btn.disabled = isLoading;
+        btn.classList.toggle("opacity-50", isLoading);
+        btn.classList.toggle("cursor-not-allowed", isLoading);
+      });
+
+      els.inputText.disabled = isLoading;
+      els.methodology.disabled = isLoading;
+    }
+
+    function openSidebar() {
+      els.sidebar.classList.remove("sidebar-closed");
+      els.sidebar.classList.add("sidebar-open");
+      els.overlay.classList.remove("hidden");
+      els.sidebar.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeSidebar() {
+      els.sidebar.classList.add("sidebar-closed");
+      els.sidebar.classList.remove("sidebar-open");
+      els.overlay.classList.add("hidden");
+      els.sidebar.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function updateCounters() {
+      els.inputCounter.textContent = `${els.inputText.value.length} znaků`;
+      els.methodologyCounter.textContent = `${els.methodology.value.length} znaků`;
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem(storageKeys.input, els.inputText.value);
+      localStorage.setItem(storageKeys.methodology, els.methodology.value);
+    }
+
+    function loadFromLocalStorage() {
+      els.inputText.value = localStorage.getItem(storageKeys.input) || "";
+      els.methodology.value = localStorage.getItem(storageKeys.methodology) || "";
+      updateCounters();
+    }
+function setActivePresetButton() {
+  const buttons = [
+    { key: "oneOff", el: els.presetOneOffBtn },
+    { key: "standard", el: els.presetStandardBtn },
+    { key: "insolvency", el: els.presetInsolvencyBtn }
+  ];
+
+  buttons.forEach(({ key, el }) => {
+    el.classList.toggle("preset-btn-active", state.presetKey === key);
+  });
+}
+
+    function createCard(title, icon, contentNode, accent = "indigo") {
+      const colorMap = {
+        indigo: {
+          iconBg: "bg-indigo-50",
+          iconText: "text-indigo-600",
+          border: "border-indigo-100",
+          title: "text-indigo-700"
+        },
+        amber: {
+          iconBg: "bg-amber-50",
+          iconText: "text-amber-600",
+          border: "border-amber-100",
+          title: "text-amber-700"
+        },
+        emerald: {
+          iconBg: "bg-emerald-50",
+          iconText: "text-emerald-600",
+          border: "border-emerald-100",
+          title: "text-emerald-700"
+        },
+        rose: {
+          iconBg: "bg-rose-50",
+          iconText: "text-rose-600",
+          border: "border-rose-100",
+          title: "text-rose-700"
+        }
+      };
+
+      const c = colorMap[accent] || colorMap.indigo;
+
+      const wrapper = document.createElement("section");
+      wrapper.className = `rounded-2xl border ${c.border} bg-white p-5 shadow-sm`;
+
+      const header = document.createElement("div");
+      header.className = "flex items-center gap-3 mb-4";
+
+      const iconBox = document.createElement("div");
+      iconBox.className = `${c.iconBg} ${c.iconText} p-2 rounded-xl`;
+
+      const iconEl = document.createElement("i");
+      iconEl.setAttribute("data-lucide", icon);
+      iconEl.className = "w-4 h-4";
+      iconBox.appendChild(iconEl);
+
+      const titleEl = document.createElement("h3");
+      titleEl.className = `text-sm font-black uppercase tracking-wider ${c.title}`;
+      titleEl.textContent = title;
+
+      header.appendChild(iconBox);
+      header.appendChild(titleEl);
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(contentNode);
+
+      return wrapper;
+    }
+
+    function createParagraphBlock(text) {
+      const div = document.createElement("div");
+      div.className = "whitespace-pre-wrap text-slate-700 leading-relaxed";
+      div.textContent = text || "Bez obsahu.";
+      return div;
+    }
+
+    function createListBlock(items, emptyText) {
+      if (!items || !items.length) {
+        const empty = document.createElement("p");
+        empty.className = "text-slate-400 italic";
+        empty.textContent = emptyText;
+        return empty;
+      }
+
+      const ul = document.createElement("ul");
+      ul.className = "space-y-2";
+
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "flex gap-3 items-start";
+
+        const dot = document.createElement("span");
+        dot.className = "mt-2 w-2 h-2 rounded-full bg-slate-300 shrink-0";
+
+        const text = document.createElement("span");
+        text.className = "text-slate-700 leading-relaxed";
+        text.textContent = item;
+
+        li.appendChild(dot);
+        li.appendChild(text);
+        ul.appendChild(li);
+      });
+
+      return ul;
+    }
+
+    function renderResult(result, type) {
+      state.lastResult = result;
+      state.lastType = type;
+
+      els.output.innerHTML = "";
+
+      const container = document.createElement("div");
+      container.className = "space-y-5";
+
+      const summary = document.createElement("div");
+      summary.className = "rounded-2xl bg-slate-50 border border-slate-200 p-4 flex flex-wrap gap-2 items-center";
+
+      const badge1 = document.createElement("span");
+      badge1.className = "inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wide";
+      badge1.textContent = `Typ: ${type}`;
+
+      const badge2 = document.createElement("span");
+      badge2.className = "inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide";
+      badge2.textContent = "Výstup připraven";
+
+      summary.appendChild(badge1);
+      summary.appendChild(badge2);
+      container.appendChild(summary);
+
+      const formattedCard = createCard(
+        "Zpracovaný výstup",
+        "file-text",
+        createParagraphBlock(result.formatted_output),
+        "indigo"
+      );
+
+      const qualityCard = createCard(
+        "Kontrola kvality zápisu",
+        "search",
+        createListBlock(result.quality_check, "Nebyly zjištěny žádné zásadní problémy."),
+        "amber"
+      );
+
+      const recommendationsCard = createCard(
+        "Doporučení",
+        "lightbulb",
+        createListBlock(result.recommendations, "Žádná doporučení."),
+        "emerald"
+      );
+
+      const missingInfoCard = createCard(
+        "Chybějící informace",
+        "triangle-alert",
+        createListBlock(result.missing_information, "Nejsou uvedeny žádné chybějící informace."),
+        "rose"
+      );
+
+      container.appendChild(formattedCard);
+      container.appendChild(qualityCard);
+      container.appendChild(recommendationsCard);
+      container.appendChild(missingInfoCard);
+
+      els.output.appendChild(container);
+      els.copyBtn.disabled = false;
+      lucide.createIcons();
+    }
+
+    function renderError(message) {
+      els.output.innerHTML = "";
+
+      const box = document.createElement("div");
+      box.className = "p-6 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-semibold";
+      box.textContent = `Chyba: ${message}`;
+
+      els.output.appendChild(box);
+      els.copyBtn.disabled = true;
+    }
+
+    function renderInfo(message) {
+      els.output.innerHTML = "";
+
+      const box = document.createElement("div");
+      box.className = "p-6 bg-slate-50 text-slate-600 rounded-2xl border border-slate-200 font-semibold";
+      box.textContent = message;
+
+      els.output.appendChild(box);
+      els.copyBtn.disabled = true;
+    }
+
+    function buildClipboardText() {
+      if (!state.lastResult) return "";
+
+      const r = state.lastResult;
+
+      const asList = (arr) =>
+        arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
+
+      return [
+        `Typ výstupu: ${state.lastType}`,
+        "",
+        "ZPRACOVANÝ VÝSTUP",
+        r.formatted_output || "Bez obsahu.",
+        "",
+        "KONTROLA KVALITY ZÁPISU",
+        asList(r.quality_check),
+        "",
+        "DOPORUČENÍ",
+        asList(r.recommendations),
+        "",
+        "CHYBĚJÍCÍ INFORMACE",
+        asList(r.missing_information)
+      ].join("\n");
+    }
+
+    async function copyToClipboard() {
+      const text = buildClipboardText();
+      if (!text) return;
+
+      const original = els.copyBtn.innerHTML;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        els.copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>Kopírováno';
+        els.copyBtn.classList.add("text-emerald-600");
+      } catch (error) {
+        els.copyBtn.innerHTML = '<i data-lucide="circle-alert" class="w-4 h-4"></i>Chyba';
+        els.copyBtn.classList.add("text-red-600");
+      }
+
+      lucide.createIcons();
+
+      setTimeout(() => {
+        els.copyBtn.innerHTML = original;
+        els.copyBtn.classList.remove("text-emerald-600", "text-red-600");
+        lucide.createIcons();
+      }, 1800);
+    }
+
+    function clearAll() {
+      els.inputText.value = "";
+      localStorage.removeItem(storageKeys.input);
+      updateCounters();
+
+      els.output.innerHTML = `
+        <div class="h-full flex flex-col items-center justify-center text-slate-300 opacity-60 text-center">
+          <i data-lucide="sparkles" class="w-12 h-12 mb-3"></i>
+          <p class="italic text-sm">Zatím nebyl vygenerován žádný výsledek...</p>
+        </div>
+      `;
+      state.lastResult = null;
+      els.copyBtn.disabled = true;
+      lucide.createIcons();
+    }
+
+    function cancelRequest() {
+      if (state.controller) {
+        state.controller.abort();
+      }
+    }
+
+    async function processRequest(type) {
+      const input = els.inputText.value.trim();
+      const methodology = els.methodology.value.trim();
+
+      if (!input) {
+        renderInfo("Vložte prosím vstupní text.");
+        return;
+      }
+
+      if (state.controller) {
+        state.controller.abort();
+      }
+
+      state.controller = new AbortController();
+      setLoading(true);
+
+      try {
+        
+const response = await fetch("/api/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    input,
+    methodology,
+    type,
+    presetKey: state.presetKey
+  }),
+  signal: state.controller.signal
+});
+
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || `Server vrátil chybu ${response.status}`);
+        }
+
+        renderResult(data.result, type);
+      } catch (error) {
+        if (error.name === "AbortError") {
+          renderInfo("Požadavek byl zrušen.");
+        } else {
+          renderError(error.message || "Neočekávaná chyba.");
+        }
+      } finally {
+        setLoading(false);
+        state.controller = null;
+      }
+    }
+
+    els.openSettingsBtn.addEventListener("click", openSidebar);
+    els.closeSettingsBtn.addEventListener("click", closeSidebar);
+    els.overlay.addEventListener("click", closeSidebar);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeSidebar();
+      }
+
+      if (e.ctrlKey && e.key === "Enter") {
+        e.preventDefault();
+        processRequest("zápis");
+      }
+    });
+
+    els.inputText.addEventListener("input", () => {
+      updateCounters();
+      saveToLocalStorage();
+    });
+
+    els.methodology.addEventListener("input", () => {
+      updateCounters();
+      saveToLocalStorage();
+    });
+
+    els.processButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const type = btn.getAttribute("data-process");
+        processRequest(type);
+      });
+    });
+
+    
+els.presetOneOffBtn.addEventListener("click", () => {
+  state.presetKey = "oneOff";
+  localStorage.setItem(storageKeys.presetKey, state.presetKey);
+  setActivePresetButton();
+  showToast("Použit režim: Jednorázová zakázka", "info");
+});
+
+els.presetStandardBtn.addEventListener("click", () => {
+  state.presetKey = "standard";
+  localStorage.setItem(storageKeys.presetKey, state.presetKey);
+  setActivePresetButton();
+  showToast("Použit režim: Standardní větší zakázka", "info");
+});
+
+els.presetInsolvencyBtn.addEventListener("click", () => {
+  state.presetKey = "insolvency";
+  localStorage.setItem(storageKeys.presetKey, state.presetKey);
+  setActivePresetButton();
+  showToast("Použit režim: Oddlužení – přísný režim", "info");
+});
+    els.copyBtn.addEventListener("click", copyToClipboard);
+    els.clearBtn.addEventListener("click", clearAll);
+    els.cancelBtn.addEventListener("click", cancelRequest);
+
+    
+loadFromLocalStorage();
+setActiveProcessButton(state.lastType);
+setActivePresetButton();
+lucide.createIcons();
+
+  </script>
+</body>
+</html>
