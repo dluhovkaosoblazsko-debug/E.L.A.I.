@@ -284,7 +284,9 @@ if (!GEMINI_API_KEY) {
 
 app.use(express.json({ limit: "250kb" }));
 app.use(express.static(path.join(__dirname, "public")));
-
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 function validateInput({ input, methodology, type, presetKey }) {
   const allowedTypes = ["zápis", "kazuistika", "kontrola"];
   const allowedPresetKeys = ["oneOff", "standard", "insolvency"];
