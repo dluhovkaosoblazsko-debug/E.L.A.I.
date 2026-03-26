@@ -15,6 +15,11 @@ const MODEL_FALLBACK = process.env.MODEL_FALLBACK || "gemini-2.5-flash-lite";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const PUBLIC_DIR_LOWER = path.join(__dirname, "public");
+const PUBLIC_DIR_UPPER = path.join(__dirname, "Public");
+const PUBLIC_DIR = fs.existsSync(PUBLIC_DIR_LOWER) ? PUBLIC_DIR_LOWER : PUBLIC_DIR_UPPER;
+const INDEX_FILE = path.join(PUBLIC_DIR, "index.html");
+
 const GENERAL_TEMPLATE_RULES = `
 Jsi zkušený dluhový poradce a metodik. Zpracováváš pracovní zápisy ze služby tak, aby byly věcné, metodicky bezpečné, jazykově čisté a profesionální.
 
@@ -283,11 +288,25 @@ if (!GEMINI_API_KEY) {
   process.exit(1);
 }
 
+
 app.use(express.json({ limit: "250kb" }));
-app.use(express.static(path.join(__dirname, "public")));
+
+console.log("PUBLIC_DIR:", PUBLIC_DIR);
+console.log("INDEX_FILE:", INDEX_FILE);
+console.log("public exists:", fs.existsSync(PUBLIC_DIR_LOWER));
+console.log("Public exists:", fs.existsSync(PUBLIC_DIR_UPPER));
+console.log("INDEX exists:", fs.existsSync(INDEX_FILE));
+
+app.use(express.static(PUBLIC_DIR));
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(INDEX_FILE);
 });
+
+app.get("/index.html", (req, res) => {
+  res.sendFile(INDEX_FILE);
+});
+
 function validateInput({ input, methodology, type, presetKey }) {
   const allowedTypes = ["zápis", "kazuistika", "kontrola"];
   const allowedPresetKeys = ["oneOff", "standard", "insolvency"];
