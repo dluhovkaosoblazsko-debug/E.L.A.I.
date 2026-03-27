@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elektronický Laštovica</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
@@ -52,15 +50,18 @@
     .sidebar-closed {
       transform: translateX(100%);
     }
-    
-.preset-btn-active {
-  background: #e0e7ff !important;
-  border-color: #4f46e5 !important;
-  color: #312e81 !important;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.18), 0 10px 25px rgba(79, 70, 229, 0.15) !important;
-  transform: translateY(-1px);
-}
 
+    .preset-btn-active {
+      background: #e0e7ff !important;
+      border-color: #4f46e5 !important;
+      color: #312e81 !important;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.18), 0 10px 25px rgba(79, 70, 229, 0.15) !important;
+      transform: translateY(-1px);
+    }
+
+    .preset-btn-active div {
+      color: #4338ca !important;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -78,7 +79,7 @@
         </div>
         <div>
           <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-            Elekronický Laštovica <span class="text-indigo-600">E.L.A.I.</span>
+            Elektronický Laštovica <span class="text-indigo-600">E.L.A.I.</span>
           </h1>
           <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
             Kontrola zápisů • zdarma a na počkání
@@ -91,6 +92,7 @@
           <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
           Backend Ready
         </div>
+
         <button
           id="openSettingsBtn"
           aria-label="Otevřít nastavení"
@@ -119,39 +121,39 @@
           ></textarea>
 
           <div class="flex justify-between items-center mt-2 text-[11px] text-slate-400">
-  <span>Doporučeno do 10 000 znaků</span>
-  <span id="inputCounter">0 znaků</span>
-</div>
+            <span>Doporučeno do 10 000 znaků</span>
+            <span id="inputCounter">0 znaků</span>
+          </div>
 
-<div class="grid grid-cols-3 gap-3 mt-6">
-  <button
-    data-process="zápis"
-    class="process-btn group relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 shadow-md shadow-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-  >
-    <i data-lucide="file-text" class="w-4 h-4"></i>
-    Čistopis
-  </button>
+          <div class="grid grid-cols-3 gap-3 mt-6">
+            <button
+              data-process="zápis"
+              class="process-btn group relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 shadow-md shadow-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              Čistopis
+            </button>
 
-  <button
-    data-process="kazuistika"
-    class="process-btn bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
-  >
-    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-    Kazuistika
-  </button>
+            <button
+              data-process="kazuistika"
+              class="process-btn bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+            >
+              <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+              Kazuistika
+            </button>
 
-  <button
-    data-process="kontrola"
-    class="process-btn bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-  >
-    <i data-lucide="check-circle" class="w-4 h-4"></i>
-    Kontrola
-  </button>
-</div>
+            <button
+              data-process="kontrola"
+              class="process-btn bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+            >
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              Kontrola
+            </button>
+          </div>
 
-<div class="mt-4 text-[11px] text-slate-400">
-  Klávesová zkratka: <span class="font-bold text-slate-600">Ctrl + Enter</span> spustí „Čistopis“
-</div>
+          <div class="mt-4 text-[11px] text-slate-400">
+            Klávesová zkratka: <span class="font-bold text-slate-600">Ctrl + Enter</span> spustí „Čistopis“
+          </div>
         </div>
       </div>
 
@@ -211,7 +213,6 @@
     </div>
   </div>
 
-
   <aside
     id="settings-sidebar"
     class="fixed inset-y-0 right-0 w-80 md:w-96 bg-white shadow-2xl z-[100] border-l border-slate-200 sidebar-closed flex flex-col"
@@ -234,11 +235,9 @@
 
     <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
       <div class="space-y-3">
-        
-<label for="methodology" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-  Doplňkové pokyny k vybranému režimu
-</label>
-
+        <label for="methodology" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          Doplňkové pokyny k vybranému režimu
+        </label>
 
         <textarea
           id="methodology"
@@ -256,34 +255,32 @@
         </p>
       </div>
 
-      
-<div class="space-y-3">
-  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-    Přednastavené režimy metodiky
-  </label>
+      <div class="space-y-3">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          Přednastavené režimy metodiky
+        </label>
 
-  <div class="grid grid-cols-1 gap-2">
-    <button id="presetOneOffBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-      Jednorázová zakázka
-      <div class="text-[11px] text-slate-400 mt-1">Krátký režim bez podrobného mapování</div>
-    </button>
+        <div class="grid grid-cols-1 gap-2">
+          <button id="presetOneOffBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+            Jednorázová zakázka
+            <div class="text-[11px] text-slate-400 mt-1">Krátký režim bez podrobného mapování</div>
+          </button>
 
-    <button id="presetStandardBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-      Standardní větší zakázka
-      <div class="text-[11px] text-slate-400 mt-1">Střední přísnost od vstupu po hledání řešení</div>
-    </button>
+          <button id="presetStandardBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+            Standardní větší zakázka
+            <div class="text-[11px] text-slate-400 mt-1">Střední přísnost od vstupu po hledání řešení</div>
+          </button>
 
-    <button id="presetInsolvencyBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-      Oddlužení – přísný režim
-      <div class="text-[11px] text-slate-400 mt-1">Přísný režim od vstupu až po realizaci řešení</div>
-    </button>
-  </div>
+          <button id="presetInsolvencyBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
+            Oddlužení – přísný režim
+            <div class="text-[11px] text-slate-400 mt-1">Přísný režim od vstupu až po realizaci řešení</div>
+          </button>
+        </div>
 
-  <p class="text-[10px] text-slate-400 leading-relaxed italic">
-    Po kliknutí se použije interní režim uložený na serveru. Plné znění šablon není v rozhraní vidět.
-  </p>
-</div>
-
+        <p class="text-[10px] text-slate-400 leading-relaxed italic">
+          Po kliknutí se použije interní režim uložený na serveru. Plné znění šablon není v rozhraní vidět.
+        </p>
+      </div>
 
       <div class="mt-auto pt-6 border-t border-slate-100">
         <div class="bg-indigo-50 p-4 rounded-xl">
@@ -308,8 +305,6 @@
   </aside>
 
   <script>
-    lucide.createIcons();
-
     const els = {
       inputText: document.getElementById("inputText"),
       inputCounter: document.getElementById("inputCounter"),
@@ -326,30 +321,24 @@
       openSettingsBtn: document.getElementById("openSettingsBtn"),
       closeSettingsBtn: document.getElementById("closeSettingsBtn"),
       presetOneOffBtn: document.getElementById("presetOneOffBtn"),
-presetStandardBtn: document.getElementById("presetStandardBtn"),
-presetInsolvencyBtn: document.getElementById("presetInsolvencyBtn")
+      presetStandardBtn: document.getElementById("presetStandardBtn"),
+      presetInsolvencyBtn: document.getElementById("presetInsolvencyBtn")
     };
 
-    
-const storageKeys = {
-  input: "caseguard_input",
-  methodology: "caseguard_methodology",
-  lastType: "caseguard_last_type",
-  presetKey: "caseguard_preset_key"
-};
+    const storageKeys = {
+      input: "caseguard_input",
+      methodology: "caseguard_methodology",
+      lastType: "caseguard_last_type",
+      presetKey: "caseguard_preset_key"
+    };
 
-
-    
-const state = {
-  isLoading: false,
-  controller: null,
-  lastResult: null,
-  lastType: localStorage.getItem(storageKeys.lastType) || "zápis",
-  presetKey: localStorage.getItem(storageKeys.presetKey) || "standard"
-};
-
-
-    
+    const state = {
+      isLoading: false,
+      controller: null,
+      lastResult: null,
+      lastType: localStorage.getItem(storageKeys.lastType) || "zápis",
+      presetKey: localStorage.getItem(storageKeys.presetKey) || "standard"
+    };
 
     function setLoading(isLoading) {
       state.isLoading = isLoading;
@@ -396,17 +385,49 @@ const state = {
       els.methodology.value = localStorage.getItem(storageKeys.methodology) || "";
       updateCounters();
     }
-function setActivePresetButton() {
-  const buttons = [
-    { key: "oneOff", el: els.presetOneOffBtn },
-    { key: "standard", el: els.presetStandardBtn },
-    { key: "insolvency", el: els.presetInsolvencyBtn }
-  ];
 
-  buttons.forEach(({ key, el }) => {
-    el.classList.toggle("preset-btn-active", state.presetKey === key);
-  });
-}
+    function setActivePresetButton() {
+      const buttons = [
+        { key: "oneOff", el: els.presetOneOffBtn },
+        { key: "standard", el: els.presetStandardBtn },
+        { key: "insolvency", el: els.presetInsolvencyBtn }
+      ];
+
+      buttons.forEach(({ key, el }) => {
+        el.classList.toggle("preset-btn-active", state.presetKey === key);
+      });
+    }
+
+    function setActiveProcessButton(activeType) {
+      els.processButtons.forEach((btn) => {
+        const isActive = btn.getAttribute("data-process") === activeType;
+        btn.classList.toggle("ring-2", isActive);
+        btn.classList.toggle("ring-offset-2", isActive);
+        btn.classList.toggle("ring-indigo-500", isActive && activeType === "zápis");
+        btn.classList.toggle("ring-slate-500", isActive && activeType === "kazuistika");
+        btn.classList.toggle("ring-amber-500", isActive && activeType === "kontrola");
+      });
+    }
+
+    function showToast(message, type = "info") {
+      const toast = document.createElement("div");
+      toast.className = "fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-bold z-[200]";
+
+      if (type === "info") {
+        toast.classList.add("bg-slate-800");
+      } else if (type === "success") {
+        toast.classList.add("bg-emerald-600");
+      } else {
+        toast.classList.add("bg-rose-600");
+      }
+
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 1800);
+    }
 
     function createCard(title, icon, contentNode, accent = "indigo") {
       const colorMap = {
@@ -450,6 +471,7 @@ function setActivePresetButton() {
       const iconEl = document.createElement("i");
       iconEl.setAttribute("data-lucide", icon);
       iconEl.className = "w-4 h-4";
+
       iconBox.appendChild(iconEl);
 
       const titleEl = document.createElement("h3");
@@ -505,6 +527,8 @@ function setActivePresetButton() {
     function renderResult(result, type) {
       state.lastResult = result;
       state.lastType = type;
+      localStorage.setItem(storageKeys.lastType, type);
+      setActiveProcessButton(type);
 
       els.output.innerHTML = "";
 
@@ -516,13 +540,14 @@ function setActivePresetButton() {
 
       const badge1 = document.createElement("span");
       badge1.className = "inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wide";
-      
-const typeLabels = {
-  zápis: "Čistopis",
-  kazuistika: "Kazuistika",
-  kontrola: "Kontrola"
-};
 
+      const typeLabels = {
+        zápis: "Čistopis",
+        kazuistika: "Kazuistika",
+        kontrola: "Kontrola"
+      };
+
+      badge1.textContent = `Typ: ${typeLabels[type] || type}`;
 
       const badge2 = document.createElement("span");
       badge2.className = "inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide";
@@ -530,6 +555,7 @@ const typeLabels = {
 
       summary.appendChild(badge1);
       summary.appendChild(badge2);
+
       container.appendChild(summary);
 
       const formattedCard = createCard(
@@ -560,36 +586,60 @@ const typeLabels = {
         "rose"
       );
 
+      const languageCard = createCard(
+        "Návrh lepšího znění",
+        "pen-square",
+        createListBlock(result.language_suggestions, "Jazyk byl průběžně kultivován přímo ve zpracovaném zápisu."),
+        "indigo"
+      );
+
       const hasItems = (arr) => Array.isArray(arr) && arr.length > 0;
 
-if (type === "zápis") {
-  container.appendChild(formattedCard);
+      if (type === "zápis") {
+        container.appendChild(formattedCard);
 
-  if (hasItems(result.quality_check)) {
-    container.appendChild(qualityCard);
-  }
+        if (hasItems(result.quality_check)) {
+          container.appendChild(qualityCard);
+        }
 
-  if (hasItems(result.recommendations)) {
-    container.appendChild(recommendationsCard);
-  }
+        if (hasItems(result.recommendations)) {
+          container.appendChild(recommendationsCard);
+        }
 
-  if (hasItems(result.missing_information)) {
-    container.appendChild(missingInfoCard);
-  }
-} else {
-  container.appendChild(formattedCard);
-  container.appendChild(qualityCard);
-  container.appendChild(recommendationsCard);
-  container.appendChild(missingInfoCard);
-}
+        if (hasItems(result.missing_information)) {
+          container.appendChild(missingInfoCard);
+        }
+
+        if (hasItems(result.language_suggestions)) {
+          container.appendChild(languageCard);
+        }
+      } else {
+        container.appendChild(formattedCard);
+        container.appendChild(qualityCard);
+        container.appendChild(recommendationsCard);
+        container.appendChild(missingInfoCard);
+        container.appendChild(languageCard);
+      }
+
+      els.output.appendChild(container);
+      els.copyBtn.disabled = false;
+      lucide.createIcons();
+    }
+
+    function renderError(message) {
+      els.output.innerHTML = "";
+      const box = document.createElement("div");
+      box.className = "p-6 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-semibold";
+      box.textContent = `Chyba: ${message}`;
+      els.output.appendChild(box);
+      els.copyBtn.disabled = true;
+    }
 
     function renderInfo(message) {
       els.output.innerHTML = "";
-
       const box = document.createElement("div");
       box.className = "p-6 bg-slate-50 text-slate-600 rounded-2xl border border-slate-200 font-semibold";
       box.textContent = message;
-
       els.output.appendChild(box);
       els.copyBtn.disabled = true;
     }
@@ -598,9 +648,7 @@ if (type === "zápis") {
       if (!state.lastResult) return "";
 
       const r = state.lastResult;
-
-      const asList = (arr) =>
-        arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
+      const asList = (arr) => arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
 
       return [
         `Typ výstupu: ${state.lastType}`,
@@ -615,7 +663,10 @@ if (type === "zápis") {
         asList(r.recommendations),
         "",
         "CHYBĚJÍCÍ INFORMACE",
-        asList(r.missing_information)
+        asList(r.missing_information),
+        "",
+        "NÁVRH LEPŠÍHO ZNĚNÍ",
+        asList(r.language_suggestions)
       ].join("\n");
     }
 
@@ -654,6 +705,7 @@ if (type === "zápis") {
           <p class="italic text-sm">Zatím nebyl vygenerován žádný výsledek...</p>
         </div>
       `;
+
       state.lastResult = null;
       els.copyBtn.disabled = true;
       lucide.createIcons();
@@ -680,23 +732,22 @@ if (type === "zápis") {
 
       state.controller = new AbortController();
       setLoading(true);
+      setActiveProcessButton(type);
 
       try {
-        
-const response = await fetch("/api/generate", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    input,
-    methodology,
-    type,
-    presetKey: state.presetKey
-  }),
-  signal: state.controller.signal
-});
-
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            input,
+            methodology,
+            type,
+            presetKey: state.presetKey
+          }),
+          signal: state.controller.signal
+        });
 
         const data = await response.json();
 
@@ -749,37 +800,35 @@ const response = await fetch("/api/generate", {
       });
     });
 
-    
-els.presetOneOffBtn.addEventListener("click", () => {
-  state.presetKey = "oneOff";
-  localStorage.setItem(storageKeys.presetKey, state.presetKey);
-  setActivePresetButton();
-  showToast("Použit režim: Jednorázová zakázka", "info");
-});
+    els.presetOneOffBtn.addEventListener("click", () => {
+      state.presetKey = "oneOff";
+      localStorage.setItem(storageKeys.presetKey, state.presetKey);
+      setActivePresetButton();
+      showToast("Použit režim: Jednorázová zakázka", "info");
+    });
 
-els.presetStandardBtn.addEventListener("click", () => {
-  state.presetKey = "standard";
-  localStorage.setItem(storageKeys.presetKey, state.presetKey);
-  setActivePresetButton();
-  showToast("Použit režim: Standardní větší zakázka", "info");
-});
+    els.presetStandardBtn.addEventListener("click", () => {
+      state.presetKey = "standard";
+      localStorage.setItem(storageKeys.presetKey, state.presetKey);
+      setActivePresetButton();
+      showToast("Použit režim: Standardní větší zakázka", "info");
+    });
 
-els.presetInsolvencyBtn.addEventListener("click", () => {
-  state.presetKey = "insolvency";
-  localStorage.setItem(storageKeys.presetKey, state.presetKey);
-  setActivePresetButton();
-  showToast("Použit režim: Oddlužení – přísný režim", "info");
-});
+    els.presetInsolvencyBtn.addEventListener("click", () => {
+      state.presetKey = "insolvency";
+      localStorage.setItem(storageKeys.presetKey, state.presetKey);
+      setActivePresetButton();
+      showToast("Použit režim: Oddlužení – přísný režim", "info");
+    });
+
     els.copyBtn.addEventListener("click", copyToClipboard);
     els.clearBtn.addEventListener("click", clearAll);
     els.cancelBtn.addEventListener("click", cancelRequest);
 
-    
-loadFromLocalStorage();
-setActiveProcessButton(state.lastType);
-setActivePresetButton();
-lucide.createIcons();
-
+    loadFromLocalStorage();
+    setActiveProcessButton(state.lastType);
+    setActivePresetButton();
+    lucide.createIcons();
   </script>
 </body>
 </html>
