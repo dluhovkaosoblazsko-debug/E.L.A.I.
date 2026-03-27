@@ -124,15 +124,15 @@
           </div>
 
           <div class="grid grid-cols-3 gap-3 mt-6">
-            <button
-              data-process="zápis"
-              class="process-btn group relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 shadow-md shadow-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <i data-lucide="file-text" class="w-4 h-4"></i>
-              Zápis
-            </button>
+            
+<button
+  data-process="zápis"
+  class="process-btn group relative overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 shadow-md shadow-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+>
+  <i data-lucide="file-text" class="w-4 h-4"></i>
+  Čistopis
+</button>
 
-            <button
               data-process="kazuistika"
               class="process-btn bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex flex-col items-center gap-1 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
             >
@@ -515,7 +515,13 @@ function setActivePresetButton() {
 
       const badge1 = document.createElement("span");
       badge1.className = "inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wide";
-      badge1.textContent = `Typ: ${type}`;
+      
+const typeLabels = {
+  zápis: "Čistopis",
+  kazuistika: "Kazuistika",
+  kontrola: "Kontrola"
+};
+
 
       const badge2 = document.createElement("span");
       badge2.className = "inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide";
@@ -553,26 +559,28 @@ function setActivePresetButton() {
         "rose"
       );
 
-      container.appendChild(formattedCard);
-      container.appendChild(qualityCard);
-      container.appendChild(recommendationsCard);
-      container.appendChild(missingInfoCard);
+      const hasItems = (arr) => Array.isArray(arr) && arr.length > 0;
 
-      els.output.appendChild(container);
-      els.copyBtn.disabled = false;
-      lucide.createIcons();
-    }
+if (type === "zápis") {
+  container.appendChild(formattedCard);
 
-    function renderError(message) {
-      els.output.innerHTML = "";
+  if (hasItems(result.quality_check)) {
+    container.appendChild(qualityCard);
+  }
 
-      const box = document.createElement("div");
-      box.className = "p-6 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-semibold";
-      box.textContent = `Chyba: ${message}`;
+  if (hasItems(result.recommendations)) {
+    container.appendChild(recommendationsCard);
+  }
 
-      els.output.appendChild(box);
-      els.copyBtn.disabled = true;
-    }
+  if (hasItems(result.missing_information)) {
+    container.appendChild(missingInfoCard);
+  }
+} else {
+  container.appendChild(formattedCard);
+  container.appendChild(qualityCard);
+  container.appendChild(recommendationsCard);
+  container.appendChild(missingInfoCard);
+}
 
     function renderInfo(message) {
       els.output.innerHTML = "";
