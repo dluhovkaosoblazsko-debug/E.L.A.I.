@@ -446,24 +446,31 @@ function validateInput({ input, methodology, type, presetKey }) {
 
 function getTypeInstruction(type) {
   if (type === "zápis") {
-    return `
+  return `
 TYP VÝSTUPU: ZÁPIS
 
-Hlavním cílem je vytvořit hotový, profesionální, věcný a přímo použitelný zápis do spisu.
+Hlavním cílem je vytvořit hotový, profesionální, jazykově kultivovaný a přímo použitelný zápis do spisu.
 Těžiště práce má být ve zpracovaném zápisu, nikoli v jeho kritice.
 
+Zápis chápej jako čistopisový režim:
+- převáděj syrové poznámky, pracovní podklady nebo části doporučení do souvislého a věcného zápisu,
+- zachovej význam a obsah vstupu,
+- zlepši větnou skladbu, srozumitelnost, gramatiku a stylistiku,
+- drž se základního metodického konsenzu podle aktuální fáze podpory a zakázky klienta,
+- nevytvářej z režimu Zápis auditní nebo přehnaně kritický režim.
+
 Důraz dej na:
-- úplnost v rozsahu odpovídajícím zvolenému režimu,
 - přehledné a souvislé zpracování,
 - věcnou formulaci,
-- jasné zachycení zakázky, zjištění, kroků, rizik a dalšího postupu,
-- jazykovou a stylistickou kultivaci přímo ve výsledném textu.
+- jazykovou a stylistickou kultivaci přímo ve výsledném textu,
+- zachování obsahu a logické návaznosti,
+- úplnost v rozsahu odpovídajícím zvolenému režimu a aktuální fázi podpory.
 
-Obsahovou a metodickou kontrolu proveď také, ale pouze jako stručnou doprovodnou část.
-Nevytvářej z režimu Zápis auditní nebo přehnaně kritický režim.
+Obsahovou a metodickou kontrolu proveď pouze jako stručnou doprovodnou část.
 Pokud je zápis v zásadě použitelný, zaměř se přednostně na jeho kvalitní dokončení a zpřehlednění, ne na nadměrné vytýkání drobných nedostatků.
+Uveď jen ty nedostatky, které jsou zjevně významné pro srozumitelnost, bezpečnost nebo metodickou použitelnost zápisu.
 `.trim();
-  }
+}
 
   if (type === "kazuistika") {
     return `
