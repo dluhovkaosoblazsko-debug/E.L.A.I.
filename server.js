@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
-import { fileURLToPath } from "url";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -38,16 +38,23 @@ OBECNÁ PRAVIDLA PRO VŠECHNY REŽIMY:
 - Pokud je text po jazykové stránce v zásadě použitelný, jazyk nekomentuj nadměrně.
 - Vždy dodrž obecný minimální standard zápisu.
 
-OBECNÝ MINIMÁLNÍ STANDARD:
+OBECNÝ MINIMÁLNÍ STANDARD DLE TYPŮ PODPORY:
 Ze zápisu musí být vždy čitelné:
-- jaký problém klient řešil při vstupu do služby,
-- v jaké fázi práce se klient nacházel,
-- jaká zásadní zjištění byla učiněna,
-- jaká rizika byla identifikována, včetně lhůt, pokud jsou relevantní,
-- jaký postup byl doporučen a proč,
-- zda klient s postupem souhlasil, pokud to plyne z poznámek,
-- jaké dokumenty a přílohy byly pořízeny nebo založeny, pokud to plyne z poznámek,
-- zda byla doporučena nebo zprostředkována návazná služba, pokud to plyne z poznámek.
+1. Jednání se zájemcem o službu
+- jaký problém klient chce řešit při vstupu do služby,
+- jaké je postavení klienta na trhu práce a případně zda má nějaké znevýhodnění; minimálně zda je zaměstnaný nebo nezaměstnaný a jaký má stupeň vzdělání, pokud to plyne z poznámek,
+- zda situace vyžaduje kroky k základní stabilizaci a pokud ano, jaké,
+- jaké další kroky byly stanoveny na straně klienta i poradce,
+- zda je zakázka klienta jasně definována a zda klient s navrženými dalšími kroky souhlasil, pokud to plyne z poznámek.
+2. Mapování závazků a příčin předlužení
+- zda proběhlo mapování závazků a posouzení příčin vzniku dluhů,
+- jak proběhlo a s jakým výsledkem,
+- jaké jsou zdroje a nástroje informací, například informace od klienta, výpisy z registrů, listinné podklady nebo jiná ověření.
+3. Hledání, příprava a realizace řešení
+- jaké řešení zakázky klienta bylo navrženo,
+- zřejmá vazba mezi typem zakázky, zmapovanou situací klienta a navrženým řešením,
+- zda klient s navrženým řešením souhlasil, pokud to plyne z poznámek,
+- jaké jsou domluveny další kroky na straně klienta i poradce a zda s nimi klient souhlasil, pokud to plyne z poznámek.
 
 ETICKÝ A ODBORNÝ STANDARD:
 - Formulace musí být věcné, bez hodnotících nebo zraňujících soudů.
@@ -61,11 +68,50 @@ ZAMĚŘENÍ KONTROLY:
 - Sleduj, zda zápis zachycuje podstatné informace, rizika, souvislosti, další kroky a odpovědnosti.
 - Sleduj, zda je zápis logický, srozumitelný a bezpečný pro další práci.
 
+MÍRA POŽADAVKŮ NAD RÁMEC MINIMÁLNÍHO STANDARDU:
+
+REŽIM: JEDNORÁZOVÁ ZAKÁZKA
+- Dodrž minimální standard zápisu.
+- Posuzuj všechny tři oblasti podpory jako možné součásti zápisu, ale nevyžaduj u každé zakázky stejnou hloubku ve všech oblastech.
+- V režimu jednorázové zakázky uplatni pouze přiměřený minimální standard v každé dotčené oblasti.
+- Nevytýkej jako chybu, že některá oblast podpory není rozvinuta do větší hloubky, pokud to odpovídá rozsahu a povaze jednorázové zakázky.
+- Nad rámec minima upozorňuj jen na zjevně významné nedostatky, zejména:
+  - nejasně vymezený důvod kontaktu nebo zakázku,
+  - chybějící popis provedeného úkonu nebo podpory,
+  - chybějící hlavní riziko nebo omezení tam, kde je zjevně relevantní,
+  - nejasné další kroky,
+  - neodlišení tvrzení klienta a ověřených informací tam, kde je to významné pro bezpečnost zápisu.
+
+REŽIM: STANDARDNÍ VĚTŠÍ ZAKÁZKA
+- Dodrž minimální standard zápisu.
+- Vyžaduj přiměřené rozvinutí všech relevantních oblastí podpory.
+- Sleduj logickou vazbu mezi zjištěními, mapováním situace a navrženým řešením.
+- Upozorňuj zejména na:
+  - nejasné nebo slabě popsané zdroje informací,
+  - nedostatečně popsané mapování závazků a příčin předlužení,
+  - slabé zdůvodnění navrženého řešení,
+  - nejasnou vazbu mezi zjištěnou situací klienta a navrženým postupem,
+  - nekonkrétní další kroky, odpovědnosti nebo lhůty.
+- Nevytýkej automaticky absenci výpisu z registrů, pokud jsou použity jiné dostatečné a odborně použitelné zdroje a je jasně popsáno, z čeho pracovník vycházel.
+
+REŽIM: ODDLUŽENÍ – PŘÍSNÝ REŽIM
+- Dodrž minimální standard zápisu.
+- Uplatni vysoké nároky na úplnost, přesnost a odborné odůvodnění.
+- Za závažný metodický nedostatek považuj zejména:
+  - neúplné nebo jen orientační mapování závazků,
+  - neodlišení ověřených a neověřených údajů,
+  - chybějící popis příjmů, výdajů a majetkových poměrů v rozsahu potřebném pro posouzení oddlužení,
+  - chybějící rizika pro oddlužení,
+  - chybějící odůvodnění, proč je oddlužení vhodná nebo preferovaná strategie,
+  - chybějící podklady bez vysvětlení, proč chybí a jak budou doplněny.
+
 VÝSTUP:
 Vždy vytvoř tyto 3 části:
 1. Zpracovaný zápis
 2. Obsahová a metodická kontrola
 3. Návrh lepšího znění problematických míst
+
+U TYPU VÝSTUPU: KAZUISTIKA může být obsahová a metodická kontrola stručnější a méně dominantní. Hlavním těžištěm výstupu má být souvislá a odborně použitelná kazuistika.
 
 PRAVIDLO PRO ČÁST 3:
 - Neuváděj samostatný seznam překlepů nebo pravopisných chyb.
@@ -79,12 +125,12 @@ Následující názvy oblastí a typů podpory jsou pevně dané. Nepovažuj jej
 
 1. Jednání se zájemcem o službu
 - Seznámení klienta s nabídkou služby.
-- Základní anamnéza, rámcová identifikace problému klienta a posouzení jeho příslušnosti k CS projektu
+- Základní anamnéza, rámcová identifikace problému klienta a posouzení jeho příslušnosti k CS projektu.
 - Uzavření smlouvy, podpis monitorovacího listu se souhlasem se zpracováním osobních údajů.
-- Základní úkony k dosažení prvotní stabilizace klienta (vyřízení výběru nezabavitelné částky z účtu klienta, poradenství v oblasti identifikace prioritních závazků a edukace klienta v oblasti ekonomicko právní, za účelem dosažení jeho základní orientace v problému).
+- Základní úkony k dosažení prvotní stabilizace klienta (vyřízení výběru nezabavitelné částky z účtu klienta, poradenství v oblasti identifikace prioritních závazků a edukace klienta v oblasti ekonomicko-právní za účelem dosažení jeho základní orientace v problému).
 
 2. Mapování závazků a příčin předlužení
-- Systematické mapování dluhů klienta a jejich příčin (výpisy z registrů, komunikace s věřiteli a exekutory, analýza listinných elektronických dokumentů klienta apod.).
+- Systematické mapování dluhů klienta a jejich příčin (výpisy z registrů, komunikace s věřiteli a exekutory, analýza listinných a elektronických dokumentů klienta apod.).
 - Sestavení přehledové tabulky závazků klienta.
 - Rozbor příčin dluhů (např. nevýhodné smlouvy, ztráta práce a další).
 
@@ -108,9 +154,7 @@ PRAVIDLO PRO PRÁCI S TYPY PODPORY:
 const PRESET_TEMPLATES = {
   oneOff: `
 REŽIM: JEDNORÁZOVÁ ZAKÁZKA
-
 Použij režim jednorázové zakázky bez podrobného mapování, ale vždy při dodržení obecného minimálního standardu zápisu.
-
 Tento režim použij, pokud:
 - jde o jednorázový úkon nebo jednorázovou konzultaci,
 - z povahy zakázky nevyplývá potřeba širší strategie,
@@ -128,7 +172,6 @@ Zápis musí minimálně obsahovat:
 - informaci, zda byla zakázka jednorázově uzavřena, nebo zda bylo doporučeno pokračování služby.
 
 U tohoto režimu nevyžaduj kompletní mapování závazků a příčin předlužení.
-
 Pokud se ale v průběhu jednorázové zakázky ukáže, že situace přesahuje rámec jednorázového úkonu, zejména pokud se objeví:
 - nejasný rozsah zadlužení,
 - vícečetné exekuce,
@@ -150,9 +193,7 @@ Preferovaná osnova:
 
   standard: `
 REŽIM: STANDARDNÍ VĚTŠÍ ZAKÁZKA
-
 Použij středně přísný režim pro větší zakázku od vstupu klienta přes mapování situace až po hledání a přípravu řešení.
-
 Tento režim použij, pokud:
 - nejde jen o jednorázový úkon,
 - ale zároveň nejde o přísný režim oddlužení,
@@ -210,9 +251,7 @@ Preferovaná osnova:
 
   insolvency: `
 REŽIM: ODDLUŽENÍ – PŘÍSNÝ REŽIM
-
 Použij přísný odborný režim od vstupu klienta a prvotního mapování až po detailní mapování předlužení, jeho příčin a realizaci řešení.
-
 Tento režim použij vždy, když:
 - klient výslovně žádá podporu při vstupu do oddlužení,
 - pracovník zvažuje oddlužení jako hlavní nebo pravděpodobnou strategii,
@@ -288,7 +327,6 @@ if (!GEMINI_API_KEY) {
   process.exit(1);
 }
 
-
 app.use(express.json({ limit: "250kb" }));
 
 console.log("PUBLIC_DIR:", PUBLIC_DIR);
@@ -343,14 +381,19 @@ function getTypeInstruction(type) {
     return `
 TYP VÝSTUPU: ZÁPIS
 
-Hlavním cílem je vytvořit hotový, profesionální a použitelný zápis do spisu.
-Důraz dej na:
-- věcný a souvislý zpracovaný zápis,
-- přehlednost,
-- zachycení podstatných skutečností,
-- rizik, kroků a dalšího postupu.
+Hlavním cílem je vytvořit hotový, profesionální, věcný a přímo použitelný zápis do spisu.
+Těžiště práce má být ve zpracovaném zápisu, nikoli v jeho kritice.
 
-Kontrolu kvality proveď také, ale pouze jako doprovodnou část. Hlavním výstupem má být kvalitní zápis.
+Důraz dej na:
+- úplnost v rozsahu odpovídajícím zvolenému režimu,
+- přehledné a souvislé zpracování,
+- věcnou formulaci,
+- jasné zachycení zakázky, zjištění, kroků, rizik a dalšího postupu,
+- jazykovou a stylistickou kultivaci přímo ve výsledném textu.
+
+Obsahovou a metodickou kontrolu proveď také, ale pouze jako stručnou doprovodnou část.
+Nevytvářej z režimu Zápis auditní nebo přehnaně kritický režim.
+Pokud je zápis v zásadě použitelný, zaměř se přednostně na jeho kvalitní dokončení a zpřehlednění, ne na nadměrné vytýkání drobných nedostatků.
 `.trim();
   }
 
@@ -367,6 +410,7 @@ Důraz dej na:
 - vyhodnocení směru další práce.
 
 Výstup má být strukturovanější a interpretačně bohatší než běžný zápis, ale stále věcný a bezpečný.
+Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
 `.trim();
   }
 
@@ -428,13 +472,11 @@ ${GENERAL_TEMPLATE_RULES}
 PEVNĚ DANÉ TYPY PODPORY:
 ${FIXED_SUPPORT_TYPES}
 
-
 VYBRANÝ REŽIM:
 ${presetInstruction}
 
 SPECIFICKÁ PRAVIDLA DLE TYPU VÝSTUPU:
 ${typeInstruction}${customMethodology}
-
 
 DALŠÍ POVINNÁ PRAVIDLA:
 - Nevracej markdown.
@@ -530,9 +572,7 @@ async function callGemini(model, input, methodology, type, presetKey) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message =
-      data?.error?.message ||
-      `Gemini API vrátilo chybu ${response.status}`;
+    const message = data?.error?.message || `Gemini API vrátilo chybu ${response.status}`;
     throw new Error(message);
   }
 
