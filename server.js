@@ -130,7 +130,7 @@ MÍRA POŽADAVKŮ NAD RÁMEC MINIMÁLNÍHO STANDARDU:
 REŽIM: JEDNORÁZOVÁ ZAKÁZKA
 - Dodrž minimální standard zápisu.
 - Posuzuj všechny tři oblasti podpory jako možné součásti zápisu, ale nevyžaduj u každé zakázky stejnou hloubku ve všech oblastech.
-- V režimu jednorázové zakázky uplatni pouze přiměřený minimální standard v každé dotčené oblasti.
+- V režimu jednorázové zakázky uplatni pouze přiměřený minimální standard v každé dotčené fáze.
 - Nevytýkej jako chybu, že některá oblast podpory není rozvinuta do větší hloubky, pokud to odpovídá rozsahu a povaze jednorázové zakázky.
 - Nad rámec minima upozorňuj jen na zjevně významné nedostatky, zejména:
   - nejasně vymezený důvod kontaktu nebo zakázku,
@@ -534,11 +534,16 @@ Pouze tam, kde je formulace nejasná nebo významově problematická, navrhneš 
 3) Navrhni lepší znění problematických míst pouze tam, kde je to skutečně potřeba
 4) Pokud něco důležitého chybí, výslovně to uveď
 
+
 SPOLEČNÁ PRAVIDLA:
 ${GENERAL_TEMPLATE_RULES}
 
-PEVNĚ DANÉ TYPY PODPORY:
+TERMINOLOGICKÁ PRAVIDLA:
+${TERMINOLOGY_RULES}
+
+PEVNĚ DANÁ STRUKTURA FÁZÍ A TYPŮ PODPORY:
 ${FIXED_SUPPORT_TYPES}
+
 
 VYBRANÝ REŽIM:
 ${presetInstruction}
