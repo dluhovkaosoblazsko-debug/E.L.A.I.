@@ -90,6 +90,7 @@ Ze zápisu musí být vždy čitelné to, co je podstatné pro aktuální fázi 
 
 FÁZE PODPORY 1: Jednání se zájemcem o službu
 Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
+- s jakou zakázkou klient přišel, či s jakým problémem k řešení přišel,
 - jaké je postavení klienta na trhu práce a případně zda má nějaké znevýhodnění; minimálně zda je zaměstnaný nebo nezaměstnaný a jaký má stupeň vzdělání, pokud to plyne z poznámek,
 - zda situace vyžaduje kroky k základní stabilizaci a pokud ano, jaké,
 - jaké další kroky byly stanoveny na straně klienta i poradce,
