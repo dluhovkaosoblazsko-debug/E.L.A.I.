@@ -19,6 +19,51 @@ const PUBLIC_DIR_LOWER = path.join(__dirname, "public");
 const PUBLIC_DIR_UPPER = path.join(__dirname, "Public");
 const PUBLIC_DIR = fs.existsSync(PUBLIC_DIR_LOWER) ? PUBLIC_DIR_LOWER : PUBLIC_DIR_UPPER;
 const INDEX_FILE = path.join(PUBLIC_DIR, "index.html");
+const TERMINOLOGY_RULES = `
+ODDLUŽENÍ
+- Preferovaný termín pro tento typ řešení dluhové situace klienta.
+- Nepoužívej místo něj automaticky pojem „insolvence“, pokud nejde o širší právní nebo procesní rámec.
+- Pokud je v poznámkách pojem „insolvence“ použit nepřesně místo oddlužení, v návrhu lepšího znění to oprav.
+
+FÁZE PODPORY
+- Tři základní pracovní fáze nebo okruhy podpory, které strukturují práci s klientem:
+  1. Jednání se zájemcem o službu
+  2. Mapování závazků a příčin předlužení
+  3. Hledání, příprava a realizace řešení
+
+OBLAST PODPORY
+- Širší pracovní oblast nebo fáze podpory, do níž spadá konkrétní práce s klientem.
+
+TYP PODPORY
+- Konkrétní výkon, sada výkonů nebo druh činnosti uvnitř příslušné oblasti nebo fáze podpory.
+
+ŘEŠENÍ ZAKÁZKY
+- Soubor navržených nebo prováděných kroků a úkonů vedoucích ke splnění zakázky klienta.
+
+SETKÁNÍ / SCHŮZKA / JEDNÁNÍ S KLIENTEM
+- Časově ohraničený kontakt s klientem, v jehož rámci dochází k poskytnutí podpory, mapování situace, řešení zakázky nebo jinému pracovnímu úkonu.
+
+ÚKON
+- Konkrétní výkon nebo činnost poradce provedená v rámci setkání s klientem a spadající do určité oblasti nebo typu podpory.
+
+ZAKÁZKA
+- To, co klient chce řešit, čeho chce dosáhnout nebo s čím potřebuje podporu.
+
+ZÁPIS
+- Dokumentace konkrétního setkání, úkonu nebo průběžné práce s klientem v rozsahu odpovídajícím aktuální fázi podpory a zakázce klienta.
+
+OVĚŘENÁ INFORMACE
+- Informace podložená dokumentem, registrem, komunikací s institucí nebo jiným ověřeným zdrojem.
+
+TVRZENÍ KLIENTA
+- Informace sdělená klientem, která dosud nebyla ověřena jiným podkladem nebo zdrojem.
+
+PRAVIDLO PRO POUŽITÍ TERMINOLOGIE:
+- Používej tyto pojmy důsledně a ve shodě s jejich vymezením.
+- Nemíchej bezdůvodně pojmy fáze podpory, oblast podpory a typ podpory.
+- Pokud je ve vstupu výslovně uvedena aktuální fáze podpory, považuj ji za závazné určení rámce kontroly.
+- Nevytýkej jako chybu absenci prvků typických pro jinou fázi podpory, pokud z poznámek neplyne, že i tato fáze byla součástí daného kontaktu.
+`.trim();
 
 const GENERAL_TEMPLATE_RULES = `
 Jsi zkušený dluhový poradce a metodik. Zpracováváš pracovní zápisy ze služby tak, aby byly věcné, metodicky bezpečné, jazykově čisté a profesionální.
@@ -38,23 +83,35 @@ OBECNÁ PRAVIDLA PRO VŠECHNY REŽIMY:
 - Pokud je text po jazykové stránce v zásadě použitelný, jazyk nekomentuj nadměrně.
 - Vždy dodrž obecný minimální standard zápisu.
 
-OBECNÝ MINIMÁLNÍ STANDARD DLE TYPŮ PODPORY:
-Ze zápisu musí být vždy čitelné:
-1. Jednání se zájemcem o službu
+
+BECNÝ MINIMÁLNÍ STANDARD DLE AKTUÁLNÍ FÁZE PODPORY:
+
+Ze zápisu musí být vždy čitelné to, co je podstatné pro aktuální fázi podpory, v níž se klient a jeho zakázka právě nacházejí.
+
+FÁZE PODPORY 1: Jednání se zájemcem o službu
+Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
 - jaký problém klient chce řešit při vstupu do služby,
 - jaké je postavení klienta na trhu práce a případně zda má nějaké znevýhodnění; minimálně zda je zaměstnaný nebo nezaměstnaný a jaký má stupeň vzdělání, pokud to plyne z poznámek,
 - zda situace vyžaduje kroky k základní stabilizaci a pokud ano, jaké,
 - jaké další kroky byly stanoveny na straně klienta i poradce,
 - zda je zakázka klienta jasně definována a zda klient s navrženými dalšími kroky souhlasil, pokud to plyne z poznámek.
-2. Mapování závazků a příčin předlužení
+
+FÁZE PODPORY 2: Mapování závazků a příčin předlužení
+Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
 - zda proběhlo mapování závazků a posouzení příčin vzniku dluhů,
-- jak proběhlo a s jakým výsledkem,
-- jaké jsou zdroje a nástroje informací, například informace od klienta, výpisy z registrů, listinné podklady nebo jiná ověření.
-3. Hledání, příprava a realizace řešení
-- jaké řešení zakázky klienta bylo navrženo,
-- zřejmá vazba mezi typem zakázky, zmapovanou situací klienta a navrženým řešením,
+- jak mapování proběhlo a s jakým výsledkem,
+- jaké byly zdroje a nástroje informací, například informace od klienta, výpisy z registrů, listinné podklady nebo jiná ověření.
+
+FÁZE PODPORY 3: Hledání, příprava a realizace řešení
+Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
+- jaké řešení zakázky klienta bylo navrženo nebo realizováno,
+- zřejmá vazba mezi zakázkou klienta, zmapovanou situací a navrženým řešením,
 - zda klient s navrženým řešením souhlasil, pokud to plyne z poznámek,
 - jaké jsou domluveny další kroky na straně klienta i poradce a zda s nimi klient souhlasil, pokud to plyne z poznámek.
+
+Pokud vstup výslovně určuje aktuální fázi podpory, posuzuj zápis primárně podle této fáze podpory.
+Nevytýkej jako chybu absenci prvků typických pro jinou fázi podpory, pokud z poznámek neplyne, že byly předmětem daného kontaktu nebo že jejich doplnění je nezbytné pro bezpečnost zápisu.
+
 
 ETICKÝ A ODBORNÝ STANDARD:
 - Formulace musí být věcné, bez hodnotících nebo zraňujících soudů.
@@ -120,21 +177,30 @@ PRAVIDLO PRO ČÁST 3:
 `.trim();
 
 const FIXED_SUPPORT_TYPES = `
-PEVNĚ STANOVENÉ TYPY PODPORY:
-Následující názvy oblastí a typů podpory jsou pevně dané. Nepovažuj jejich samotné názvy za chybu. Nenavrhuj jejich přejmenování. Nekritizuj jejich slovní podobu. Zaměř se na to, zda obsah zápisu odpovídá skutečnému průběhu práce a zda je správně a dostatečně popsán.
 
-1. Jednání se zájemcem o službu
+PEVNĚ STANOVENÁ STRUKTURA FÁZÍ A TYPŮ PODPORY:
+
+Následující názvy fází podpory a typů podpory jsou pevně dané.
+Nepovažuj jejich samotné názvy za chybu.
+Nenavrhuj jejich přejmenování.
+Nekritizuj jejich slovní podobu.
+Zaměř se na to, zda obsah zápisu odpovídá skutečnému průběhu práce a zda je správně a dostatečně popsán.
+
+FÁZE PODPORY 1: Jednání se zájemcem o službu
+Typy podpory v této fázi:
 - Seznámení klienta s nabídkou služby.
 - Základní anamnéza, rámcová identifikace problému klienta a posouzení jeho příslušnosti k CS projektu.
 - Uzavření smlouvy, podpis monitorovacího listu se souhlasem se zpracováním osobních údajů.
 - Základní úkony k dosažení prvotní stabilizace klienta (vyřízení výběru nezabavitelné částky z účtu klienta, poradenství v oblasti identifikace prioritních závazků a edukace klienta v oblasti ekonomicko-právní za účelem dosažení jeho základní orientace v problému).
 
-2. Mapování závazků a příčin předlužení
+FÁZE PODPORY 2: Mapování závazků a příčin předlužení
+Typy podpory v této fázi:
 - Systematické mapování dluhů klienta a jejich příčin (výpisy z registrů, komunikace s věřiteli a exekutory, analýza listinných a elektronických dokumentů klienta apod.).
 - Sestavení přehledové tabulky závazků klienta.
 - Rozbor příčin dluhů (např. nevýhodné smlouvy, ztráta práce a další).
 
-3. Hledání, příprava a realizace řešení
+FÁZE PODPORY 3: Hledání, příprava a realizace řešení
+Typy podpory v této fázi:
 - Vyhodnocování nejvýhodnějšího řešení situace klienta.
 - Vyjednávání splátkových kalendářů, včetně podpory klientů při jejich plnění.
 - Příprava a podání návrhu na oddlužení, včetně podpory při plnění jeho podmínek (sloučení dluhů, splátkové kalendáře, příprava na oddlužení).
@@ -143,12 +209,14 @@ Následující názvy oblastí a typů podpory jsou pevně dané. Nepovažuj jej
 - Zřízení a trénink bezpečné komunikace s úřady přes Portál občana a datovou schránku, vzdělávání v legislativě (práva dlužníka), nácvik čtení smluv (půjčky, energie, nájem).
 - Právní poradenství.
 
-PRAVIDLO PRO PRÁCI S TYPY PODPORY:
-- Typy podpory ber jako pevnou klasifikaci.
-- Nehodnoť jejich názvy.
+PRAVIDLO PRO PRÁCI S FÁZEMI A TYPY PODPORY:
+- Fáze podpory ber jako širší rámec práce s klientem.
+- Typ podpory ber jako konkrétní výkon nebo druh činnosti uvnitř příslušné fáze podpory.
+- Nehodnoť názvy fází podpory ani typů podpory.
 - Neřeš je stylisticky.
 - Posuzuj především samotný obsah zápisu.
-- Pokud je zjevný nesoulad mezi obsahem a zvoleným typem podpory, uveď to stručně a věcně jako obsahový nebo metodický nesoulad, ne jako jazykovou chybu.
+- Pokud je zjevný nesoulad mezi obsahem zápisu a uvedenou fází podpory nebo typem podpory, uveď to stručně a věcně jako obsahový nebo metodický nesoulad, ne jako jazykovou chybu.
+
 `.trim();
 
 const PRESET_TEMPLATES = {
