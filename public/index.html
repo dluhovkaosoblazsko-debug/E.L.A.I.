@@ -571,64 +571,39 @@
 
       summary.appendChild(badge1);
       summary.appendChild(badge2);
+
       container.appendChild(summary);
 
-      const titlesByType = {
-        zápis: {
-          formatted: "Výsledný zápis",
-          quality: "Doplňkové poznámky AI – obsah a metodika",
-          recommendations: "Doplňkové poznámky AI – doporučení",
-          missing: "Doplňkové poznámky AI – chybějící informace",
-          language: "Doplňkové poznámky AI – návrhy přepsání konkrétních míst"
-        },
-        kazuistika: {
-          formatted: "Kazuistika",
-          quality: "Klíčová zjištění a rizika",
-          recommendations: "Doporučený další postup",
-          missing: "Chybějící informace",
-          language: "Návrhy přepsání konkrétních míst"
-        },
-        kontrola: {
-          formatted: "Pracovní verze zápisu",
-          quality: "Kontrola kvality zápisu",
-          recommendations: "Doporučené úpravy a doplnění",
-          missing: "Chybějící informace",
-          language: "Návrhy přepsání konkrétních míst"
-        }
-      };
-
-      const ui = titlesByType[type] || titlesByType.zápis;
-
       const formattedCard = createCard(
-        ui.formatted,
+        "Zpracovaný výstup",
         "file-text",
         createEditableOutputBlock(result.formatted_output),
         "indigo"
       );
 
       const qualityCard = createCard(
-        ui.quality,
+        "Kontrola kvality zápisu",
         "search",
         createListBlock(result.quality_check, "Nebyly zjištěny žádné zásadní problémy."),
         "amber"
       );
 
       const recommendationsCard = createCard(
-        ui.recommendations,
+        "Doporučení",
         "lightbulb",
         createListBlock(result.recommendations, "Žádná doporučení."),
         "emerald"
       );
 
       const missingInfoCard = createCard(
-        ui.missing,
+        "Chybějící informace",
         "triangle-alert",
         createListBlock(result.missing_information, "Nejsou uvedeny žádné chybějící informace."),
         "rose"
       );
 
       const languageCard = createCard(
-        ui.language,
+        "Návrh lepšího znění",
         "pen-square",
         createListBlock(result.language_suggestions, "Jazyk byl průběžně kultivován přímo ve zpracovaném zápisu."),
         "indigo"
@@ -642,44 +617,18 @@
         if (hasItems(result.quality_check)) {
           container.appendChild(qualityCard);
         }
-        if (hasItems(result.recommendations)) {
-          container.appendChild(recommendationsCard);
-        }
-        if (hasItems(result.missing_information)) {
-          container.appendChild(missingInfoCard);
-        }
-        if (hasItems(result.language_suggestions)) {
-          container.appendChild(languageCard);
-        }
-      } else if (type === "kazuistika") {
-        container.appendChild(formattedCard);
 
-        if (hasItems(result.quality_check)) {
-          container.appendChild(qualityCard);
-        }
         if (hasItems(result.recommendations)) {
           container.appendChild(recommendationsCard);
         }
-        if (hasItems(result.missing_information)) {
-          container.appendChild(missingInfoCard);
-        }
-        if (hasItems(result.language_suggestions)) {
-          container.appendChild(languageCard);
-        }
-      } else if (type === "kontrola") {
-        container.appendChild(qualityCard);
 
         if (hasItems(result.missing_information)) {
           container.appendChild(missingInfoCard);
         }
-        if (hasItems(result.recommendations)) {
-          container.appendChild(recommendationsCard);
-        }
+
         if (hasItems(result.language_suggestions)) {
           container.appendChild(languageCard);
         }
-
-        container.appendChild(formattedCard);
       } else {
         container.appendChild(formattedCard);
         container.appendChild(qualityCard);
@@ -693,7 +642,8 @@
       els.copyOutputBtn.disabled = false;
       lucide.createIcons();
     }
-function renderError(message) {
+
+    function renderError(message) {
       els.output.innerHTML = "";
       const box = document.createElement("div");
       box.className = "p-6 bg-red-50 text-red-700 rounded-2xl border border-red-100 font-semibold";
