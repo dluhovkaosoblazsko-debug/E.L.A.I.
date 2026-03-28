@@ -493,7 +493,13 @@
       div.textContent = text || "Bez obsahu.";
       return div;
     }
-
+    function createEditableOutputBlock(text) {
+    const textarea = document.createElement("textarea");
+    textarea.id = "editableFormattedOutput";
+    textarea.className = "w-full min-h-[320px] p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-700 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all custom-scrollbar resize-y";
+    textarea.value = text || "Bez obsahu.";
+    return textarea;
+    } 
     function createListBlock(items, emptyText) {
       if (!items || !items.length) {
         const empty = document.createElement("p");
@@ -561,7 +567,7 @@
       const formattedCard = createCard(
         "Zpracovaný výstup",
         "file-text",
-        createParagraphBlock(result.formatted_output),
+        createEditableOutputBlock(result.formatted_output),
         "indigo"
       );
 
@@ -645,30 +651,36 @@
     }
 
     function buildClipboardText() {
-      if (!state.lastResult) return "";
+  if (!state.lastResult) return "";
 
-      const r = state.lastResult;
-      const asList = (arr) => arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
+  const r = state.lastResult;
+  const editableOutput = document.getElementById("editableFormattedOutput");
+  const currentFormattedOutput = editableOutput
+    ? editableOutput.value
+    : (r.formatted_output || "Bez obsahu.");
 
-      return [
-        `Typ výstupu: ${state.lastType}`,
-        "",
-        "ZPRACOVANÝ VÝSTUP",
-        r.formatted_output || "Bez obsahu.",
-        "",
-        "KONTROLA KVALITY ZÁPISU",
-        asList(r.quality_check),
-        "",
-        "DOPORUČENÍ",
-        asList(r.recommendations),
-        "",
-        "CHYBĚJÍCÍ INFORMACE",
-        asList(r.missing_information),
-        "",
-        "NÁVRH LEPŠÍHO ZNĚNÍ",
-        asList(r.language_suggestions)
-      ].join("\n");
-    }
+  const asList = (arr) =>
+    arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
+
+  return [
+    `Typ výstupu: ${state.lastType}`,
+    "",
+    "ZPRACOVANÝ VÝSTUP",
+    currentFormattedOutput,
+    "",
+    "KONTROLA KVALITY ZÁPISU",
+    asList(r.quality_check),
+    "",
+    "DOPORUČENÍ",
+    asList(r.recommendations),
+    "",
+    "CHYBĚJÍCÍ INFORMACE",
+    asList(r.missing_information),
+    "",
+    "NÁVRH LEPŠÍHO ZNĚNÍ",
+    asList(r.language_suggestions)
+  ].join("\n");
+}
 
     async function copyToClipboard() {
       const text = buildClipboardText();
