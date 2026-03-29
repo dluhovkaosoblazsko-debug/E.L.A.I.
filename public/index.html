@@ -656,19 +656,7 @@
         }
       } else if (type === "kazuistika") {
         container.appendChild(formattedCard);
-
-        if (hasItems(result.quality_check)) {
-          container.appendChild(qualityCard);
-        }
-        if (hasItems(result.recommendations)) {
-          container.appendChild(recommendationsCard);
-        }
-        if (hasItems(result.missing_information)) {
-          container.appendChild(missingInfoCard);
-        }
-        if (hasItems(result.language_suggestions)) {
-          container.appendChild(languageCard);
-        }
+        
       } else if (type === "kontrola") {
         container.appendChild(qualityCard);
 
