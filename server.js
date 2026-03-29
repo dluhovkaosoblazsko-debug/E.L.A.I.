@@ -560,6 +560,9 @@ ${typeInstruction}${customMethodology}
 
 DALŠÍ POVINNÁ PRAVIDLA:
 - Nevracej markdown.
+- Nepoužívej markdown bloky.
+- Nepoužívej značky ```json ani ``` .
+- Nepřidávej žádný úvodní ani závěrečný text mimo samotný JSON objekt.
 - Vrať odpověď pouze jako validní JSON.
 - formatted_output musí obsahovat už jazykově opravený a kultivovaný zápis.
 - quality_check má obsahovat jen podstatné obsahové, logické, metodické nebo procesní nedostatky.
@@ -591,7 +594,28 @@ function extractTextFromGeminiResponse(data) {
 
   return text || "";
 }
+function parseJsonSafely(rawText) {
+  const cleaned = rawText
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
 
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+
+  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+    throw new Error("Model nevrátil JSON objekt.");
+  }
+
+  const jsonCandidate = cleaned.slice(firstBrace, lastBrace + 1);
+
+  try {
+    return JSON.parse(jsonCandidate);
+  } catch (error) {
+    console.error("Nepodařilo se parsovat JSON. Kandidát:", jsonCandidate);
+    throw new Error("Model vrátil nevalidní JSON.");
+  }
+}
 function normalizeResult(parsed) {
   return {
     formatted_output:
@@ -662,12 +686,14 @@ async function callGemini(model, input, methodology, type, presetKey) {
     throw new Error("Model nevrátil žádný obsah.");
   }
 
-  let parsed;
-  try {
-    parsed = JSON.parse(text);
-  } catch (error) {
-    throw new Error("Model vrátil nevalidní JSON.");
-  }
+  
+let parsed;
+try {
+  parsed = parseJsonSafely(text);
+} catch (error) {
+  throw new Error(error.message || "Model vrátil nevalidní JSON.");
+}
+
 
   return normalizeResult(parsed);
 }
