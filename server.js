@@ -83,7 +83,7 @@ OBECNÁ PRAVIDLA PRO VŠECHNY REŽIMY:
 - Pokud je text po jazykové stránce v zásadě použitelný, jazyk nekomentuj nadměrně.
 - Vždy dodrž obecný minimální standard zápisu.
 - Pokud vstup obsahuje více jednání vztahujících se ke stejnému klientovi, při typu výstupu Kazuistika je spoj do jednoho souvislého odborného textu a nevytvářej z nich několik samostatných zápisů pod sebou.
-
+- Při typu výstupu Kazuistika nevytvářej několik samostatných zápisových bloků podle jednotlivých jednání. Pokud vstup obsahuje více jednání téhož klienta, převeď je do jedné souvislé odborné kazuistiky.
 
 BECNÝ MINIMÁLNÍ STANDARD DLE AKTUÁLNÍ FÁZE PODPORY:
 
@@ -474,32 +474,43 @@ Uveď jen ty nedostatky, které jsou zjevně významné pro srozumitelnost, bezp
 }
 
   
+
 if (type === "kazuistika") {
   return `
 TYP VÝSTUPU: KAZUISTIKA
 
-Hlavním cílem je vytvořit odbornější, souvislejší a více analytický výstup.
+Hlavním cílem je vytvořit jednu souvislou odbornou kazuistiku klienta, nikoli několik samostatných zápisů pod sebou.
+
 Důraz dej na:
-- vývoj situace klienta,
-- souvislosti,
+- vývoj situace klienta v čase,
+- souvislosti mezi jednotlivými jednáními,
 - odbornou úvahu,
 - klíčová rizika,
-- vyhodnocení směru další práce.
+- vyhodnocení směru další práce,
+- propojení jednotlivých zjištění do jednoho souvislého příběhu případu.
 
-Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi, nesepisuj je jako několik samostatných zápisů pod sebou.
-Naopak je spoj do jedné souvislé kazuistiky, která:
-- chronologicky zachytí vývoj situace klienta,
-- propojí jednotlivá jednání do jednoho celku,
-- ukáže návaznost mezi zjištěními, mapováním situace a navrženým řešením,
-- neopakuje zbytečně stejné informace v oddělených blocích,
-- nepůsobí jako soupis několika samostatných zápisů, ale jako jeden odborný souvislý text.
+Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi:
+- spoj je do jedné souvislé kazuistiky,
+- nepřepisuj je jako samostatné zápisy pod sebou,
+- nevytvářej oddělené bloky podle jednotlivých dat jednání,
+- nepoužívej číslované části typu 1., 2., 3. pro jednotlivá jednání,
+- nepoužívej strukturu ve stylu „Jednání dne ...“, pokud to není nezbytné,
+- data a časové souvislosti zapracuj přirozeně do souvislého textu.
 
-Pokud jsou ve vstupu uvedena data jednání, použij je pro správné časové seřazení vývoje případu.
+Výsledný text má působit jako jedna odborná kazuistika, ne jako sloučený soubor pracovních zápisů.
 
-Výstup má být strukturovanější a interpretačně bohatší než běžný zápis, ale stále věcný a bezpečný.
+V formatted_output:
+- piš souvislý text,
+- můžeš použít několik odstavců, ale nevytvářej samostatné zápisové sekce pro jednotlivé schůzky,
+- nepoužívej markdown nadpisy, číslování ani tučné zvýrazňování.
+- V formatted_output nepoužívej markdown syntaxi.
+- Nepoužívej znaky jako ##, ###, **, __ ani číslované nadpisy.
+- Piš formatted_output pouze jako čistý prostý text.
+
 Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
 `.trim();
 }
+
 
 
   if (type === "kontrola") {
@@ -574,7 +585,6 @@ ${typeInstruction}${customMethodology}
 DALŠÍ POVINNÁ PRAVIDLA:
 - Nevracej markdown.
 - Nepoužívej markdown bloky.
-- Nepoužívej značky ```json ani ``` .
 - Nepřidávej žádný úvodní ani závěrečný text mimo samotný JSON objekt.
 - Vrať odpověď pouze jako validní JSON.
 - formatted_output musí obsahovat už jazykově opravený a kultivovaný zápis.
