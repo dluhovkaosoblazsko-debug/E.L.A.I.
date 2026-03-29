@@ -82,6 +82,7 @@ OBECNÁ PRAVIDLA PRO VŠECHNY REŽIMY:
 - Neremcej kvůli drobnostem. Upozorňuj hlavně na podstatné obsahové, logické, metodické a procesní nedostatky.
 - Pokud je text po jazykové stránce v zásadě použitelný, jazyk nekomentuj nadměrně.
 - Vždy dodrž obecný minimální standard zápisu.
+- Pokud vstup obsahuje více jednání vztahujících se ke stejnému klientovi, při typu výstupu Kazuistika je spoj do jednoho souvislého odborného textu a nevytvářej z nich několik samostatných zápisů pod sebou.
 
 
 BECNÝ MINIMÁLNÍ STANDARD DLE AKTUÁLNÍ FÁZE PODPORY:
@@ -472,8 +473,9 @@ Uveď jen ty nedostatky, které jsou zjevně významné pro srozumitelnost, bezp
 `.trim();
 }
 
-  if (type === "kazuistika") {
-    return `
+  
+if (type === "kazuistika") {
+  return `
 TYP VÝSTUPU: KAZUISTIKA
 
 Hlavním cílem je vytvořit odbornější, souvislejší a více analytický výstup.
@@ -484,10 +486,21 @@ Důraz dej na:
 - klíčová rizika,
 - vyhodnocení směru další práce.
 
+Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi, nesepisuj je jako několik samostatných zápisů pod sebou.
+Naopak je spoj do jedné souvislé kazuistiky, která:
+- chronologicky zachytí vývoj situace klienta,
+- propojí jednotlivá jednání do jednoho celku,
+- ukáže návaznost mezi zjištěními, mapováním situace a navrženým řešením,
+- neopakuje zbytečně stejné informace v oddělených blocích,
+- nepůsobí jako soupis několika samostatných zápisů, ale jako jeden odborný souvislý text.
+
+Pokud jsou ve vstupu uvedena data jednání, použij je pro správné časové seřazení vývoje případu.
+
 Výstup má být strukturovanější a interpretačně bohatší než běžný zápis, ale stále věcný a bezpečný.
 Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
 `.trim();
-  }
+}
+
 
   if (type === "kontrola") {
     return `
