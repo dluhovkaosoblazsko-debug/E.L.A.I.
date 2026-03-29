@@ -466,22 +466,51 @@ TYP VÝSTUPU: ZÁPIS
 `.trim();
   }
 
-  if (type === "kazuistika") {
-    return `
+  
+if (type === "kazuistika") {
+  return `
 TYP VÝSTUPU: KAZUISTIKA
-- Hlavním cílem je vytvořit jednu souvislou odbornou kazuistiku klienta, nikoli několik samostatných zápisů pod sebou.
-- Důraz dej na vývoj situace klienta v čase, souvislosti mezi jednotlivými jednáními, odbornou úvahu, klíčová rizika a vyhodnocení směru další práce.
-- Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi, spoj je do jedné souvislé kazuistiky.
-- Nepřepisuj je jako samostatné zápisy pod sebou.
-- Nevytvářej oddělené bloky podle jednotlivých dat jednání.
-- Nepoužívej číslované části typu 1., 2., 3. pro jednotlivá jednání.
-- Nepoužívej strukturu ve stylu „Jednání dne ...", pokud to není nezbytné.
-- Data a časové souvislosti zapracuj přirozeně do souvislého textu.
-- Výsledný text má působit jako jedna odborná kazuistika, ne jako sloučený soubor pracovních zápisů.
-- Piš souvislý text, můžeš použít několik odstavců, ale nevytvářej samostatné zápisové sekce pro jednotlivé schůzky.
-- Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
+
+Hlavním cílem je vytvořit jednu souvislou odbornou kazuistiku klienta, nikoli několik samostatných zápisů pod sebou.
+
+Důraz dej na:
+- vývoj situace klienta v čase,
+- souvislosti mezi jednotlivými jednáními,
+- odbornou úvahu,
+- klíčová rizika,
+- vyhodnocení směru další práce,
+- propojení jednotlivých zjištění do jednoho souvislého příběhu případu.
+
+Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi:
+- spoj je do jedné souvislé kazuistiky,
+- nepřepisuj je jako samostatné zápisy pod sebou,
+- nevytvářej oddělené bloky podle jednotlivých dat jednání,
+- nepoužívej číslované části typu 1., 2., 3. pro jednotlivá jednání,
+- nepoužívej strukturu ve stylu „Jednání dne ...“, pokud to není nezbytné,
+- data a časové souvislosti zapracuj přirozeně do souvislého textu.
+
+STYL KAZUISTIKY:
+- Piš kazuistiku jako souvislý odborný vypravěčský text.
+- Nevytvářej dojem administrativního souhrnu ani slepených zápisů.
+- Propojuj jednotlivé fáze práce přirozenými přechody mezi odstavci.
+- Nepopisuj jen, co se stalo při jednotlivých jednáních, ale ukaž vývoj situace klienta a logiku práce s případem.
+- Důraz dej na souvislosti, proměnu situace klienta, význam zjištěných skutečností a návaznost jednotlivých kroků.
+- Nepiš heslovitě ani mechanicky.
+- Text může být rozdělen do několika přirozených odstavců, ale musí působit jako jeden soudržný celek.
+- Výsledný text má mít tón odborné případové reflexe, nikoli prostého souhrnu schůzek.
+
+Výsledný text má působit jako jedna odborná kazuistika, ne jako sloučený soubor pracovních zápisů.
+
+V formatted_output:
+- piš souvislý text,
+- můžeš použít několik odstavců,
+- ale nevytvářej samostatné zápisové sekce pro jednotlivé schůzky,
+- nepoužívej markdown nadpisy, číslování ani tučné zvýrazňování.
+
+Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
 `.trim();
-  }
+}
+
 
   if (type === "kontrola") {
     return `
