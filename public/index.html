@@ -51,17 +51,6 @@
       transform: translateX(100%);
     }
 
-    .preset-btn-active {
-      background: #e0e7ff !important;
-      border-color: #4f46e5 !important;
-      color: #312e81 !important;
-      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.18), 0 10px 25px rgba(79, 70, 229, 0.15) !important;
-      transform: translateY(-1px);
-    }
-
-    .preset-btn-active div {
-      color: #4338ca !important;
-    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -246,54 +235,6 @@
     </div>
 
     <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-      <div class="space-y-3">
-        <label for="methodology" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          Doplňkové pokyny k vybranému režimu
-        </label>
-
-        <textarea
-          id="methodology"
-          class="w-full h-[280px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all custom-scrollbar resize-none"
-          placeholder="Např.: Zdůrazni lhůty, ověřené podklady, návazné kroky nebo stručnější styl..."
-        ></textarea>
-
-        <div class="flex justify-between items-center text-[11px] text-slate-400">
-          <span>Ukládá se automaticky</span>
-          <span id="methodologyCounter">0 znaků</span>
-        </div>
-
-        <p class="text-[10px] text-slate-400 leading-relaxed italic">
-          Zadaná pravidla model dodržuje při každém generování.
-        </p>
-      </div>
-
-      <div class="space-y-3">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          Přednastavené režimy metodiky
-        </label>
-
-        <div class="grid grid-cols-1 gap-2">
-          <button id="presetOneOffBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-            Jednorázová zakázka
-            <div class="text-[11px] text-slate-400 mt-1">Krátký režim bez podrobného mapování</div>
-          </button>
-
-          <button id="presetStandardBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-            Standardní větší zakázka
-            <div class="text-[11px] text-slate-400 mt-1">Střední přísnost od vstupu po hledání řešení</div>
-          </button>
-
-          <button id="presetInsolvencyBtn" class="preset-btn px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-sm transition">
-            Oddlužení – přísný režim
-            <div class="text-[11px] text-slate-400 mt-1">Přísný režim od vstupu až po realizaci řešení</div>
-          </button>
-        </div>
-
-        <p class="text-[10px] text-slate-400 leading-relaxed italic">
-          Po kliknutí se použije interní režim uložený na serveru. Plné znění šablon není v rozhraní vidět.
-        </p>
-      </div>
-
       <div class="mt-auto pt-6 border-t border-slate-100">
         <div class="bg-indigo-50 p-4 rounded-xl">
           <h4 class="text-[10px] font-bold text-indigo-600 uppercase mb-2">Status systému</h4>
@@ -333,16 +274,12 @@
       overlay: document.getElementById("sidebar-overlay"),
       openSettingsBtn: document.getElementById("openSettingsBtn"),
       closeSettingsBtn: document.getElementById("closeSettingsBtn"),
-      presetOneOffBtn: document.getElementById("presetOneOffBtn"),
-      presetStandardBtn: document.getElementById("presetStandardBtn"),
-      presetInsolvencyBtn: document.getElementById("presetInsolvencyBtn")
     };
 
     const storageKeys = {
       input: "caseguard_input",
       methodology: "caseguard_methodology",
       lastType: "caseguard_last_type",
-      presetKey: "caseguard_preset_key"
     };
 
     const state = {
@@ -350,7 +287,6 @@
       controller: null,
       lastResult: null,
       lastType: localStorage.getItem(storageKeys.lastType) || "zápis",
-      presetKey: localStorage.getItem(storageKeys.presetKey) || "standard"
     };
 
     function setLoading(isLoading) {
@@ -397,18 +333,6 @@
       els.inputText.value = localStorage.getItem(storageKeys.input) || "";
       els.methodology.value = localStorage.getItem(storageKeys.methodology) || "";
       updateCounters();
-    }
-
-    function setActivePresetButton() {
-      const buttons = [
-        { key: "oneOff", el: els.presetOneOffBtn },
-        { key: "standard", el: els.presetStandardBtn },
-        { key: "insolvency", el: els.presetInsolvencyBtn }
-      ];
-
-      buttons.forEach(({ key, el }) => {
-        el.classList.toggle("preset-btn-active", state.presetKey === key);
-      });
     }
 
     function setActiveProcessButton(activeType) {
@@ -822,7 +746,7 @@ function renderError(message) {
             input,
             methodology,
             type,
-            presetKey: state.presetKey
+            presetKey: "standard"
           }),
           signal: state.controller.signal
         });
@@ -878,27 +802,6 @@ function renderError(message) {
       });
     });
 
-    els.presetOneOffBtn.addEventListener("click", () => {
-      state.presetKey = "oneOff";
-      localStorage.setItem(storageKeys.presetKey, state.presetKey);
-      setActivePresetButton();
-      showToast("Použit režim: Jednorázová zakázka", "info");
-    });
-
-    els.presetStandardBtn.addEventListener("click", () => {
-      state.presetKey = "standard";
-      localStorage.setItem(storageKeys.presetKey, state.presetKey);
-      setActivePresetButton();
-      showToast("Použit režim: Standardní větší zakázka", "info");
-    });
-
-    els.presetInsolvencyBtn.addEventListener("click", () => {
-      state.presetKey = "insolvency";
-      localStorage.setItem(storageKeys.presetKey, state.presetKey);
-      setActivePresetButton();
-      showToast("Použit režim: Oddlužení – přísný režim", "info");
-    });
-
     els.copyBtn.addEventListener("click", copyToClipboard);
     els.clearBtn.addEventListener("click", clearAll);
     els.cancelBtn.addEventListener("click", cancelRequest);
@@ -906,7 +809,6 @@ function renderError(message) {
 
     loadFromLocalStorage();
     setActiveProcessButton(state.lastType);
-    setActivePresetButton();
     lucide.createIcons();
   </script>
 </body>

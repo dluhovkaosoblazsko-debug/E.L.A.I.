@@ -235,9 +235,9 @@ app.get("/index.html", (req, res) => {
   res.sendFile(INDEX_FILE);
 });
 
-function validateInput({ input, methodology, type, presetKey }) {
+function validateInput({ input, methodology, type }) {
   const allowedTypes = ["zápis", "kazuistika", "kontrola"];
-  const allowedPresetKeys = ["oneOff", "standard", "insolvency"];
+
 
   if (typeof input !== "string" || !input.trim()) {
     return "Vstupní text je povinný.";
@@ -259,9 +259,6 @@ function validateInput({ input, methodology, type, presetKey }) {
     return "Neplatný typ výstupu.";
   }
 
-  if (!allowedPresetKeys.includes(presetKey)) {
-    return "Neplatný režim metodiky.";
-  }
 
   return null;
 }
@@ -314,8 +311,7 @@ function enqueueRequest(task) {
   });
 }
 
-function buildSystemPrompt(type, methodology, presetKey) {
-  const presetLabel = PRESET_LABELS[presetKey] || PRESET_LABELS.standard;
+function buildSystemPrompt(type, methodology) {
   const typeLabel = TYPE_LABELS[type] || TYPE_LABELS["zápis"];
 
   let prompt = SYSTEM_PROMPT_TEMPLATE
