@@ -178,9 +178,11 @@ VÝSTUP A JSON STRUKTURA
 - formatted_output má obsahovat už jazykově opravený a kultivovaný text.
 - quality_check má obsahovat jen skutečné podstatné nedostatky, které snižují odbornou použitelnost, bezpečnost nebo metodickou správnost zápisu.
 - Do quality_check nezařazuj údaje, které by bylo pouze vhodné doplnit pro větší úplnost, pokud jejich absence sama o sobě nečiní zápis metodicky chybným.
+- Za podstatný metodický nedostatek nepovažuj samotnou absenci administrativních identifikátorů nebo formulářových údajů, pokud je jádro zakázky, průběh práce, zjištění, navržené řešení a další postup odborně srozumitelně zachyceno.
 - Pokud jde pouze o údaj vhodný k doplnění pro větší úplnost, zařaď ho do missing_information nebo recommendations, ne do quality_check.
 - recommendations má obsahovat stručná doporučení pro doplnění nebo zlepšení zápisu.
 - missing_information má obsahovat chybějící důležité údaje.
+- Do missing_information nezařazuj běžné administrativní nebo formulářové náležitosti, které nejsou součástí vstupu, jako je datum schůzky, jméno pracovníka, identifikace klienta, číslo spisu nebo jiné evidenční údaje, pokud jejich doplnění není výslovně požadováno uživatelem nebo není nezbytné pro odbornou použitelnost zápisu.
 - language_suggestions má obsahovat pouze návrhy lepšího znění tam, kde byla původní formulace nejasná, nepřesná nebo odborně nevhodná.
 - Nepřidávej seznam drobných pravopisných nebo gramatických chyb.
 `.trim();
@@ -221,6 +223,7 @@ PRAVIDLO PRO PRÁCI S FÁZEMI A TYPY PODPORY
 - Typ podpory ber jako konkrétní výkon nebo druh činnosti uvnitř příslušné fáze podpory.
 - Nehodnoť názvy fází podpory ani typů podpory.
 - Neřeš je stylisticky.
+- Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Posuzuj především samotný obsah zápisu.
 - Pokud vstup obsahuje konkrétní typy podpory bez výslovného uvedení názvu fáze podpory, přiřaď je k odpovídající fázi podpory podle pevně stanovené struktury a nevytýkej to jako chybu.
 - Nevytýkej jako chybu, že vstup pracuje přímo s typy podpory, pokud tyto typy podpory odpovídají pevně stanovené struktuře.
