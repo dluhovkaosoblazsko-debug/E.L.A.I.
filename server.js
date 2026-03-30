@@ -769,28 +769,33 @@ app.post("/api/generate", async (req, res) => {
     let usedModel = MODEL_PRIMARY;
 
     result = await enqueueRequest(async () => {
-      try {
-        usedModel = MODEL_PRIMARY;
-        return await callGemini(
-          MODEL_PRIMARY,
-          input.trim(),
-          methodology.trim(),
-          type,
-          presetKey
-        );
-      } catch (primaryError) {
-        console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
-        usedModel = MODEL_FALLBACK;
+  try {
+    usedModel = MODEL_PRIMARY;
+    return await callGemini(
+      MODEL_PRIMARY,
+      input.trim(),
+      methodology.trim(),
+      type,
+      presetKey
+    );
+  } catch (primaryError) {
+    console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
 
-        return await callGemini(
-          MODEL_FALLBACK,
-          input.trim(),
-          methodology.trim(),
-          type,
-          presetKey
-        );
-      }
-    });
+    if (isQuotaExceededError(primaryError)) {
+      throw primaryError;
+    }
+
+    usedModel = MODEL_FALLBACK;
+
+    return await callGemini(
+      MODEL_FALLBACK,
+      input.trim(),
+      methodology.trim(),
+      type,
+      presetKey
+    );
+  }
+});
 
     return res.json({
       ok: true,
