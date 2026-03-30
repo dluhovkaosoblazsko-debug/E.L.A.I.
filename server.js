@@ -12,6 +12,12 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL_PRIMARY = process.env.MODEL_PRIMARY || "gemini-2.5-flash";
 const MODEL_FALLBACK = process.env.MODEL_FALLBACK || "gemini-2.5-flash-lite";
 
+const REQUEST_QUEUE = [];
+let isQueueRunning = false;
+let lastRequestStartedAt = 0;
+
+const MIN_REQUEST_INTERVAL_MS = 3500;
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -90,13 +96,10 @@ OBECNÁ PRAVIDLA STYLU A BEZPEČNOSTI
 const MINIMUM_STANDARD_RULES = `
 MINIMÁLNÍ STANDARD DLE AKTUÁLNÍ FÁZE PODPORY
 - Posuzuj zápis primárně podle aktuální fáze podpory, pokud je ve vstupu výslovně uvedena nebo jednoznačně plyne z obsahu.
-- Pokud jsou ve vstupu uvedeny konkrétní typy podpory, které jednoznačně spadají do jedné fáze podpory, považuj tuto fázi za dostatečně určenou a nikdy nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Nevytýkej jako chybu absenci prvků typických pro jinou fázi podpory, pokud z poznámek neplyne, že byly součástí daného kontaktu nebo že jejich doplnění je nezbytné pro bezpečnost zápisu.
-- Posuzuj vždy tento konkrétní zápis z daného kontaktu, nikoli celý spis nebo celý případ.
 - Pokud zápis odpovídá Fázi podpory 3 a z textu plyne, že navazuje na dříve provedené mapování nebo dřívější vyhodnocení situace klienta, nepožaduj po tomto konkrétním zápisu znovu úplný obsah Fáze podpory 2.
 - V takovém případě sleduj hlavně to, zda je zřejmé, že navržené nebo realizované řešení vychází z dříve zjištěné situace klienta, ne zda jsou všechny podklady a zjištění z Fáze 2 znovu rozepsány v tomto jednom zápisu.
 - Absenci podrobného opakování mapování závazků, příjmů, výdajů a majetkových poměrů v jednotlivém zápisu z Fáze 3 nevytýkej jako chybu, pokud text výslovně navazuje na již dříve provedené vyhodnocení a nejde o nový samostatný akt mapování.
-- Pokud text výslovně uvádí, že k řešení bylo přistoupeno na základě předchozího vyhodnocení nebo mapování, považuj tuto návaznost za dostatečnou a nepožaduj znovu doslovné rozepsání všech podkladů z předchozí fáze.
 
 FÁZE PODPORY 1: Jednání se zájemcem o službu
 Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
@@ -134,7 +137,6 @@ REŽIM: JEDNORÁZOVÁ ZAKÁZKA
   - chybějící hlavní riziko nebo omezení tam, kde je zjevně relevantní,
   - nejasné další kroky,
   - neodlišení tvrzení klienta a ověřených informací tam, kde je to významné pro bezpečnost zápisu.
-- Nevyžaduj ve vstupu samostatné označení typu zakázky; přiměřenost posuzuj podle systémově zvoleného režimu.
 
 REŽIM: STANDARDNÍ VĚTŠÍ ZAKÁZKA
 - Dodrž minimální standard zápisu.
@@ -147,8 +149,6 @@ REŽIM: STANDARDNÍ VĚTŠÍ ZAKÁZKA
   - nejasnou vazbu mezi zjištěnou situací klienta a navrženým postupem,
   - nekonkrétní další kroky, odpovědnosti nebo lhůty.
 - Nevytýkej automaticky absenci výpisu z registrů, pokud jsou použity jiné dostatečné a odborně použitelné zdroje a je jasně popsáno, z čeho pracovník vycházel.
-- Nevyžaduj, aby každý jednotlivý zápis samostatně opakoval celý dosavadní průběh případu nebo všechny údaje z předchozích fází, pokud je zřejmé, že jde o navazující kontakt.
-- Nevyžaduj ve vstupu samostatné označení typu zakázky; přiměřenost posuzuj podle systémově zvoleného režimu.
 
 REŽIM: ODDLUŽENÍ – PŘÍSNÝ REŽIM
 - Dodrž minimální standard zápisu.
@@ -160,10 +160,6 @@ REŽIM: ODDLUŽENÍ – PŘÍSNÝ REŽIM
   - chybějící rizika pro oddlužení,
   - chybějící odůvodnění, proč je oddlužení vhodná nebo preferovaná strategie,
   - chybějící podklady bez vysvětlení, proč chybí a jak budou doplněny.
-- Tyto vysoké nároky posuzuj s ohledem na celý případ a aktuální fázi práce.
-- U jednotlivého navazujícího zápisu z Fáze 3 nepožaduj, aby znovu doslovně reprodukoval všechny podklady a zjištění, které mohly být odborně zachyceny v předchozích kontaktech.
-- Pokud text výslovně navazuje na dřívější vyhodnocení nebo mapování, nevytýkej jako chybu, že tento jeden zápis znovu neobsahuje kompletní přehled příjmů, výdajů, majetku a závazků.
-- Nevyžaduj ve vstupu samostatné označení typu zakázky; přiměřenost posuzuj podle systémově zvoleného režimu.
 `.trim();
 
 const OUTPUT_STRUCTURE_RULES = `
@@ -193,11 +189,9 @@ VÝSTUP A JSON STRUKTURA
 - Do quality_check nezařazuj údaje, které by bylo pouze vhodné doplnit pro větší úplnost, pokud jejich absence sama o sobě nečiní zápis metodicky chybným.
 - Za podstatný metodický nedostatek nepovažuj samotnou absenci administrativních identifikátorů nebo formulářových údajů, pokud je jádro zakázky, průběh práce, zjištění, navržené řešení a další postup odborně srozumitelně zachyceno.
 - Pokud jde pouze o údaj vhodný k doplnění pro větší úplnost, zařaď ho do missing_information nebo recommendations, ne do quality_check.
-- Nikdy nezařazuj do quality_check, recommendations ani missing_information výtku, že chybí explicitní uvedení fáze podpory, pokud jsou ve vstupu uvedeny konkrétní typy podpory, které jednoznačně spadají do jedné fáze podpory.
-- Nikdy nezařazuj do quality_check, recommendations ani missing_information výtku, že chybí explicitní označení typu zakázky jako „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je režim určen systémově konfigurací.
 - recommendations má obsahovat stručná doporučení pro doplnění nebo zlepšení zápisu.
 - missing_information má obsahovat chybějící důležité údaje.
-- Do missing_information nezařazuj běžné administrativní nebo formulářové náležitosti, které nejsou součástí vstupu, jako je datum a čas schůzky, jméno pracovníka, identifikace klienta, číslo spisu, místo jednání, forma jednání nebo jiné evidenční údaje, pokud jejich doplnění není výslovně požadováno uživatelem nebo není nezbytné pro odbornou použitelnost daného zápisu.
+- Do missing_information nezařazuj běžné administrativní nebo formulářové náležitosti, které nejsou součástí vstupu, jako je datum a čas schůzky, jméno pracovníka, identifikace klienta, číslo spisu nebo jiné evidenční údaje, pokud jejich doplnění není výslovně požadováno uživatelem nebo není nezbytné pro odbornou použitelnost daného zápisu.
 - language_suggestions má obsahovat pouze návrhy lepšího znění tam, kde byla původní formulace nejasná, nepřesná nebo odborně nevhodná.
 - Nepřidávej seznam drobných pravopisných nebo gramatických chyb.
 `.trim();
@@ -238,9 +232,10 @@ PRAVIDLO PRO PRÁCI S FÁZEMI A TYPY PODPORY
 - Typ podpory ber jako konkrétní výkon nebo druh činnosti uvnitř příslušné fáze podpory.
 - Nehodnoť názvy fází podpory ani typů podpory.
 - Neřeš je stylisticky.
+- Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Posuzuj především samotný obsah zápisu.
 - Pokud vstup obsahuje konkrétní typy podpory bez výslovného uvedení názvu fáze podpory, přiřaď je k odpovídající fázi podpory podle pevně stanovené struktury a nevytýkej to jako chybu.
-- Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
+- - Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Pokud je zjevný nesoulad mezi obsahem zápisu a uvedenou fází podpory nebo typem podpory, uveď to stručně a věcně jako obsahový nebo metodický nesoulad, ne jako jazykovou chybu.
 `.trim();
 
@@ -469,6 +464,47 @@ function validateInput({ input, methodology, type, presetKey }) {
   return null;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function processQueue() {
+  if (isQueueRunning) return;
+  isQueueRunning = true;
+
+  while (REQUEST_QUEUE.length > 0) {
+    const job = REQUEST_QUEUE.shift();
+
+    const now = Date.now();
+    const elapsed = now - lastRequestStartedAt;
+
+    if (elapsed < MIN_REQUEST_INTERVAL_MS) {
+      await sleep(MIN_REQUEST_INTERVAL_MS - elapsed);
+    }
+
+    lastRequestStartedAt = Date.now();
+
+    try {
+      const result = await job.task();
+      job.resolve(result);
+    } catch (error) {
+      job.reject(error);
+    }
+  }
+
+  isQueueRunning = false;
+}
+
+function enqueueRequest(task) {
+  return new Promise((resolve, reject) => {
+    REQUEST_QUEUE.push({ task, resolve, reject });
+
+    processQueue().catch((error) => {
+      console.error("Chyba fronty požadavků:", error);
+    });
+  });
+}
+
 function getTypeInstruction(type) {
   if (type === "zápis") {
     return `
@@ -487,22 +523,51 @@ TYP VÝSTUPU: ZÁPIS
 `.trim();
   }
 
-  if (type === "kazuistika") {
-    return `
+  
+if (type === "kazuistika") {
+  return `
 TYP VÝSTUPU: KAZUISTIKA
-- Hlavním cílem je vytvořit jednu souvislou odbornou kazuistiku klienta, nikoli několik samostatných zápisů pod sebou.
-- Důraz dej na vývoj situace klienta v čase, souvislosti mezi jednotlivými jednáními, odbornou úvahu, klíčová rizika a vyhodnocení směru další práce.
-- Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi, spoj je do jedné souvislé kazuistiky.
-- Nepřepisuj je jako samostatné zápisy pod sebou.
-- Nevytvářej oddělené bloky podle jednotlivých dat jednání.
-- Nepoužívej číslované části typu 1., 2., 3. pro jednotlivá jednání.
-- Nepoužívej strukturu ve stylu „Jednání dne ...“, pokud to není nezbytné.
-- Data a časové souvislosti zapracuj přirozeně do souvislého textu.
-- Výsledný text má působit jako jedna odborná kazuistika, ne jako sloučený soubor pracovních zápisů.
-- Piš souvislý text, můžeš použít několik odstavců, ale nevytvářej samostatné zápisové sekce pro jednotlivé schůzky.
-- Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
+
+Hlavním cílem je vytvořit jednu souvislou odbornou kazuistiku klienta, nikoli několik samostatných zápisů pod sebou.
+
+Důraz dej na:
+- vývoj situace klienta v čase,
+- souvislosti mezi jednotlivými jednáními,
+- odbornou úvahu,
+- klíčová rizika,
+- vyhodnocení směru další práce,
+- propojení jednotlivých zjištění do jednoho souvislého příběhu případu.
+
+Pokud vstup obsahuje více jednání nebo více zápisů vztahujících se ke stejnému klientovi:
+- spoj je do jedné souvislé kazuistiky,
+- nepřepisuj je jako samostatné zápisy pod sebou,
+- nevytvářej oddělené bloky podle jednotlivých dat jednání,
+- nepoužívej číslované části typu 1., 2., 3. pro jednotlivá jednání,
+- nepoužívej strukturu ve stylu „Jednání dne ...“, pokud to není nezbytné,
+- data a časové souvislosti zapracuj přirozeně do souvislého textu.
+
+STYL KAZUISTIKY:
+- Piš kazuistiku jako souvislý odborný vypravěčský text.
+- Nevytvářej dojem administrativního souhrnu ani slepených zápisů.
+- Propojuj jednotlivé fáze práce přirozenými přechody mezi odstavci.
+- Nepopisuj jen, co se stalo při jednotlivých jednáních, ale ukaž vývoj situace klienta a logiku práce s případem.
+- Důraz dej na souvislosti, proměnu situace klienta, význam zjištěných skutečností a návaznost jednotlivých kroků.
+- Nepiš heslovitě ani mechanicky.
+- Text může být rozdělen do několika přirozených odstavců, ale musí působit jako jeden soudržný celek.
+- Výsledný text má mít tón odborné případové reflexe, nikoli prostého souhrnu schůzek.
+
+Výsledný text má působit jako jedna odborná kazuistika, ne jako sloučený soubor pracovních zápisů.
+
+V formatted_output:
+- piš souvislý text,
+- můžeš použít několik odstavců,
+- ale nevytvářej samostatné zápisové sekce pro jednotlivé schůzky,
+- nepoužívej markdown nadpisy, číslování ani tučné zvýrazňování.
+
+Obsahová a metodická kontrola může být u kazuistiky stručnější a méně dominantní než u typu výstupu Kontrola.
 `.trim();
-  }
+}
+
 
   if (type === "kontrola") {
     return `
@@ -512,11 +577,6 @@ TYP VÝSTUPU: KONTROLA
 - Ve zpracovaném výstupu můžeš uvést stručně upravenou nebo zestručněnou verzi zápisu, ale těžiště práce musí být v kontrole.
 - Sekce kontroly má být nejdůležitější a nejpodrobnější část.
 - Doporučení mají být konkrétní a stručná.
-- Kontroluj primárně tento konkrétní zápis z daného kontaktu, ne celý spis nebo celý případ.
-- Nevytýkej absenci explicitního názvu fáze podpory, pokud jsou ve vstupu uvedeny konkrétní typy podpory, které jednoznačně spadají do jedné fáze podpory.
-- Nevytýkej absenci explicitního typu zakázky, pokud je režim metodiky určen systémově konfigurací.
-- Nevytýkej datum a čas schůzky, jméno pracovníka, identifikaci klienta, místo jednání nebo formu jednání, pokud uživatel výslovně nežádá kontrolu formulářových náležitostí.
-- U navazujícího zápisu z Fáze 3 nepožaduj znovu kompletní rozepsání Fáze 2, pokud text výslovně navazuje na dřívější vyhodnocení nebo mapování.
 `.trim();
   }
 
@@ -530,10 +590,7 @@ function buildSystemPrompt(type, methodology, presetKey) {
   const presetInstruction = PRESET_TEMPLATES[presetKey] || PRESET_TEMPLATES.standard;
   const typeInstruction = getTypeInstruction(type);
   const customMethodology = methodology?.trim()
-    ? `
-
-DODATEČNÉ UŽIVATELSKÉ POKYNY:
-${methodology.trim()}`
+    ? `\n\nDODATEČNÉ UŽIVATELSKÉ POKYNY:\n${methodology.trim()}`
     : "";
 
   return `
@@ -578,11 +635,6 @@ PRAVIDLO PRO REŽIM METODIKY
 - Nevytýkej jako chybu, že vstupní text sám výslovně neobsahuje označení „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je tento režim určen konfigurací.
 - Režim používej jako kontext pro přiměřenost kontroly, ne jako údaj, který musí být vždy doslovně zopakován ve vstupním textu.
 
-PRAVIDLA PRO NEŽÁDOUCÍ VÝTKY
-- Nikdy nevytýkej absenci explicitního názvu fáze podpory, pokud jsou ve vstupu přítomny typy podpory, které jednoznačně spadají do jedné fáze podpory.
-- Nikdy nevytýkej absenci explicitního označení typu zakázky jako „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je režim určen systémově konfigurací.
-- Nikdy automaticky nepožaduj datum a čas schůzky, jméno pracovníka, identifikaci klienta, číslo spisu, místo jednání nebo formu jednání, pokud uživatel výslovně nežádá kontrolu formulářových náležitostí.
-- U navazujícího zápisu z Fáze 3 nepožaduj znovu kompletní rozepsání Fáze 2, pokud text výslovně navazuje na dřívější vyhodnocení nebo mapování.
 
 ${OUTPUT_STRUCTURE_RULES}
 `.trim();
@@ -713,29 +765,32 @@ app.post("/api/generate", async (req, res) => {
     if (validationError) {
       return res.status(400).json({ error: validationError });
     }
-
     let result;
     let usedModel = MODEL_PRIMARY;
 
-    try {
-      result = await callGemini(
-        MODEL_PRIMARY,
-        input.trim(),
-        methodology.trim(),
-        type,
-        presetKey
-      );
-    } catch (primaryError) {
-      console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
-      usedModel = MODEL_FALLBACK;
-      result = await callGemini(
-        MODEL_FALLBACK,
-        input.trim(),
-        methodology.trim(),
-        type,
-        presetKey
-      );
-    }
+    result = await enqueueRequest(async () => {
+      try {
+        usedModel = MODEL_PRIMARY;
+        return await callGemini(
+          MODEL_PRIMARY,
+          input.trim(),
+          methodology.trim(),
+          type,
+          presetKey
+        );
+      } catch (primaryError) {
+        console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
+        usedModel = MODEL_FALLBACK;
+
+        return await callGemini(
+          MODEL_FALLBACK,
+          input.trim(),
+          methodology.trim(),
+          type,
+          presetKey
+        );
+      }
+    });
 
     return res.json({
       ok: true,
