@@ -715,7 +715,17 @@ function parseJsonSafely(rawText) {
     throw new Error("Model vrátil nevalidní JSON.");
   }
 }
+function isQuotaExceededError(error) {
+  const message = String(error?.message || "").toLowerCase();
 
+  return (
+    message.includes("quota exceeded") ||
+    message.includes("resource_exhausted") ||
+    message.includes("rate limit") ||
+    message.includes("429") ||
+    message.includes("exceeded your current quota")
+  );
+}
 function normalizeResult(parsed) {
   return {
     formatted_output:
