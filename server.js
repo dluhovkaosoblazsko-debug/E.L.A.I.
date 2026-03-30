@@ -16,7 +16,8 @@ const REQUEST_QUEUE = [];
 let isQueueRunning = false;
 let lastRequestStartedAt = 0;
 
-const MIN_REQUEST_INTERVAL_MS = 3500;
+const MIN_REQUEST_INTERVAL_MS = 8000;
+const MAX_ACTIVE_OR_WAITING_REQUESTS = 2;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -497,6 +498,13 @@ async function processQueue() {
 
 function enqueueRequest(task) {
   return new Promise((resolve, reject) => {
+    const activeOrWaiting = (isQueueRunning ? 1 : 0) + REQUEST_QUEUE.length;
+
+    if (activeOrWaiting >= MAX_ACTIVE_OR_WAITING_REQUESTS) {
+      reject(new Error("Server je právě vytížený. Počkejte prosím chvíli a zkuste to znovu."));
+      return;
+    }
+
     REQUEST_QUEUE.push({ task, resolve, reject });
 
     processQueue().catch((error) => {
@@ -504,6 +512,7 @@ function enqueueRequest(task) {
     });
   });
 }
+
 
 function getTypeInstruction(type) {
   if (type === "zápis") {
@@ -569,43 +578,16 @@ Obsahová a metodická kontrola může být u kazuistiky stručnější a méně
 }
 
 
-  
-if (type === "kontrola") {
-  return `
+  if (type === "kontrola") {
+    return `
 TYP VÝSTUPU: KONTROLA
-
-Hlavním cílem je kontrola kvality konkrétního zápisu z daného kontaktu, nikoli rekonstrukce celého spisu nebo celého případu.
-
-Důraz dej na:
-- podstatné obsahové nedostatky,
-- metodické nedostatky,
-- logické rozpory,
-- skutečně významné chybějící informace,
-- nejasnosti,
-- rizika,
-- lhůty,
-- nepřesnosti v odlišení tvrzení klienta a ověřených podkladů,
-- přiměřenost zvoleného postupu.
-
-Ve zpracovaném výstupu můžeš uvést stručně upravenou nebo zestručněnou verzi zápisu, ale těžiště práce musí být v kontrole.
-
-Sekce kontroly má být nejdůležitější a nejpodrobnější část.
-Doporučení mají být konkrétní a stručná.
-
-PŘÍSNÉ ZÁKAZY PRO REŽIM KONTROLA:
-- Nevytýkej absenci explicitního názvu fáze podpory, pokud jsou ve vstupu uvedeny konkrétní typy podpory, které jednoznačně spadají do jedné fáze podpory.
-- Nevytýkej absenci explicitního typu zakázky, pokud je režim metodiky určen systémově konfigurací.
-- Nevytýkej datum a čas schůzky, jméno pracovníka, identifikaci klienta, číslo spisu, místo jednání nebo formu jednání, pokud uživatel výslovně nežádá kontrolu formulářových náležitostí.
-- U navazujícího zápisu z Fáze podpory 3 nepožaduj znovu kompletní rozepsání Fáze podpory 2, pokud text výslovně navazuje na dřívější vyhodnocení nebo mapování.
-- Nevytvářej z kontroly požadavek na opětovné úplné doložení příjmů, výdajů, majetku, závazků a příčin předlužení, pokud nejde o nový samostatný akt mapování a pokud zápis pouze navazuje na dřívější vyhodnocení.
-- Pokud je z textu zřejmé, že řešení navazuje na dříve provedené vyhodnocení, nevytýkej jako chybu, že tento jeden zápis znovu neobsahuje úplný rozpis všech podkladů z předchozí fáze.
-- Nevytýkej jako chybu ani jako chybějící informaci, že není uvedeno, zda jde o jednorázovou nebo standardní větší zakázku, pokud je režim určen systémově.
-- Nevytýkej jako chybu ani jako chybějící informaci datum schůzky, čas schůzky, identifikaci klienta, identifikaci pracovníka, místo jednání nebo jiné evidenční údaje, pokud nejsou součástí vstupu a uživatel výslovně nepožaduje kontrolu formulářových náležitostí.
-
-Do quality_check uváděj jen to, co skutečně snižuje odbornou použitelnost, bezpečnost nebo metodickou správnost tohoto konkrétního zápisu.
+- Hlavním cílem je kontrola kvality zápisu, nikoli tvorba plného nového zápisu.
+- Důraz dej na obsahové nedostatky, metodické nedostatky, logické rozpory, chybějící informace, nejasnosti, rizika, lhůty, nepřesnosti v odlišení tvrzení klienta a ověřených podkladů a přiměřenost zvoleného postupu.
+- Ve zpracovaném výstupu můžeš uvést stručně upravenou nebo zestručněnou verzi zápisu, ale těžiště práce musí být v kontrole.
+- Sekce kontroly má být nejdůležitější a nejpodrobnější část.
+- Doporučení mají být konkrétní a stručná.
 `.trim();
-}
-
+  }
 
   return `
 TYP VÝSTUPU: OBECNÝ
@@ -662,23 +644,6 @@ PRAVIDLO PRO REŽIM METODIKY
 - Nevytýkej jako chybu, že vstupní text sám výslovně neobsahuje označení „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je tento režim určen konfigurací.
 - Režim používej jako kontext pro přiměřenost kontroly, ne jako údaj, který musí být vždy doslovně zopakován ve vstupním textu.
 
-PRAVIDLA PRO ZAKÁZANÉ KONTROLNÍ NÁLEZY
-Následující položky se nesmí objevit v quality_check, missing_information ani recommendations, pokud je uživatel výslovně nepožaduje:
-
-- chybějící explicitní název fáze podpory, pokud jsou ve vstupu uvedeny typy podpory, které jednoznačně spadají do jedné fáze podpory,
-- chybějící explicitní označení typu zakázky jako „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je režim určen systémově konfigurací,
-- datum a čas schůzky,
-- jméno pracovníka,
-- identifikace klienta,
-- číslo spisu,
-- místo jednání,
-- forma jednání,
-- jiné běžné formulářové nebo evidenční údaje, které nejsou součástí vstupu.
-
-Pokud zápis z Fáze podpory 3 výslovně navazuje na dřívější vyhodnocení nebo mapování situace klienta, nesmí se jako chyba, chybějící informace ani doporučení uvádět, že v tomto jednom zápisu chybí znovu kompletně rozepsané mapování závazků, příjmů, výdajů, majetkových poměrů nebo příčin předlužení z Fáze podpory 2.
-
-V takovém případě je možné upozornit pouze na to, že by bylo vhodné stručně zpřesnit návaznost řešení na předchozí zjištění, pokud tato návaznost není z textu dostatečně čitelná.
-
 
 ${OUTPUT_STRUCTURE_RULES}
 `.trim();
@@ -715,6 +680,7 @@ function parseJsonSafely(rawText) {
     throw new Error("Model vrátil nevalidní JSON.");
   }
 }
+
 function isQuotaExceededError(error) {
   const message = String(error?.message || "").toLowerCase();
 
@@ -726,6 +692,8 @@ function isQuotaExceededError(error) {
     message.includes("exceeded your current quota")
   );
 }
+
+
 function normalizeResult(parsed) {
   return {
     formatted_output:
@@ -823,33 +791,34 @@ app.post("/api/generate", async (req, res) => {
     let usedModel = MODEL_PRIMARY;
 
     result = await enqueueRequest(async () => {
-  try {
-    usedModel = MODEL_PRIMARY;
-    return await callGemini(
-      MODEL_PRIMARY,
-      input.trim(),
-      methodology.trim(),
-      type,
-      presetKey
-    );
-  } catch (primaryError) {
-    console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
+      try {
+        usedModel = MODEL_PRIMARY;
+        return await callGemini(
+          MODEL_PRIMARY,
+          input.trim(),
+          methodology.trim(),
+          type,
+          presetKey
+        );
+      } catch (primaryError) {
+        console.warn(`Primární model selhal (${MODEL_PRIMARY}):`, primaryError.message);
 
-    if (isQuotaExceededError(primaryError)) {
-      throw primaryError;
-    }
+        if (isQuotaExceededError(primaryError)) {
+          console.warn("Quota chyba primárního modelu, fallback se nespouští.");
+          throw primaryError;
+        }
 
-    usedModel = MODEL_FALLBACK;
+        usedModel = MODEL_FALLBACK;
 
-    return await callGemini(
-      MODEL_FALLBACK,
-      input.trim(),
-      methodology.trim(),
-      type,
-      presetKey
-    );
-  }
-});
+        return await callGemini(
+          MODEL_FALLBACK,
+          input.trim(),
+          methodology.trim(),
+          type,
+          presetKey
+        );
+      }
+    });
 
     return res.json({
       ok: true,
