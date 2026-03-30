@@ -176,7 +176,9 @@ VÝSTUP A JSON STRUKTURA
 - Nepoužívej znaky jako ##, ###, **, __ ani číslované nadpisy.
 - Piš formatted_output pouze jako čistý prostý text.
 - formatted_output má obsahovat už jazykově opravený a kultivovaný text.
-- quality_check má obsahovat jen podstatné obsahové, logické, metodické nebo procesní nedostatky.
+- quality_check má obsahovat jen skutečné podstatné nedostatky, které snižují odbornou použitelnost, bezpečnost nebo metodickou správnost zápisu.
+- Do quality_check nezařazuj údaje, které by bylo pouze vhodné doplnit pro větší úplnost, pokud jejich absence sama o sobě nečiní zápis metodicky chybným.
+- Pokud jde pouze o údaj vhodný k doplnění pro větší úplnost, zařaď ho do missing_information nebo recommendations, ne do quality_check.
 - recommendations má obsahovat stručná doporučení pro doplnění nebo zlepšení zápisu.
 - missing_information má obsahovat chybějící důležité údaje.
 - language_suggestions má obsahovat pouze návrhy lepšího znění tam, kde byla původní formulace nejasná, nepřesná nebo odborně nevhodná.
@@ -220,6 +222,8 @@ PRAVIDLO PRO PRÁCI S FÁZEMI A TYPY PODPORY
 - Nehodnoť názvy fází podpory ani typů podpory.
 - Neřeš je stylisticky.
 - Posuzuj především samotný obsah zápisu.
+- Pokud vstup obsahuje konkrétní typy podpory bez výslovného uvedení názvu fáze podpory, přiřaď je k odpovídající fázi podpory podle pevně stanovené struktury a nevytýkej to jako chybu.
+- Nevytýkej jako chybu, že vstup pracuje přímo s typy podpory, pokud tyto typy podpory odpovídají pevně stanovené struktuře.
 - Pokud je zjevný nesoulad mezi obsahem zápisu a uvedenou fází podpory nebo typem podpory, uveď to stručně a věcně jako obsahový nebo metodický nesoulad, ne jako jazykovou chybu.
 `.trim();
 
@@ -572,6 +576,12 @@ Pokud se pravidla dostanou do napětí, prioritu mají:
 3. typ výstupu,
 4. vybraný režim metodiky,
 5. dodatečné uživatelské pokyny.
+
+PRAVIDLO PRO REŽIM METODIKY
+- Vybraný režim metodiky je určen systémově a je závazný.
+- Nevytýkej jako chybu, že vstupní text sám výslovně neobsahuje označení „jednorázová zakázka“, „standardní větší zakázka“ nebo „oddlužení – přísný režim“, pokud je tento režim určen konfigurací.
+- Režim používej jako kontext pro přiměřenost kontroly, ne jako údaj, který musí být vždy doslovně zopakován ve vstupním textu.
+
 
 ${OUTPUT_STRUCTURE_RULES}
 `.trim();
