@@ -91,6 +91,9 @@ const MINIMUM_STANDARD_RULES = `
 MINIMÁLNÍ STANDARD DLE AKTUÁLNÍ FÁZE PODPORY
 - Posuzuj zápis primárně podle aktuální fáze podpory, pokud je ve vstupu výslovně uvedena nebo jednoznačně plyne z obsahu.
 - Nevytýkej jako chybu absenci prvků typických pro jinou fázi podpory, pokud z poznámek neplyne, že byly součástí daného kontaktu nebo že jejich doplnění je nezbytné pro bezpečnost zápisu.
+- Pokud zápis odpovídá Fázi podpory 3 a z textu plyne, že navazuje na dříve provedené mapování nebo dřívější vyhodnocení situace klienta, nepožaduj po tomto konkrétním zápisu znovu úplný obsah Fáze podpory 2.
+- V takovém případě sleduj hlavně to, zda je zřejmé, že navržené nebo realizované řešení vychází z dříve zjištěné situace klienta, ne zda jsou všechny podklady a zjištění z Fáze 2 znovu rozepsány v tomto jednom zápisu.
+- Absenci podrobného opakování mapování závazků, příjmů, výdajů a majetkových poměrů v jednotlivém zápisu z Fáze 3 nevytýkej jako chybu, pokud text výslovně navazuje na již dříve provedené vyhodnocení a nejde o nový samostatný akt mapování.
 
 FÁZE PODPORY 1: Jednání se zájemcem o službu
 Pokud zápis odpovídá této fázi podpory, musí z něj být minimálně patrné:
@@ -182,7 +185,7 @@ VÝSTUP A JSON STRUKTURA
 - Pokud jde pouze o údaj vhodný k doplnění pro větší úplnost, zařaď ho do missing_information nebo recommendations, ne do quality_check.
 - recommendations má obsahovat stručná doporučení pro doplnění nebo zlepšení zápisu.
 - missing_information má obsahovat chybějící důležité údaje.
-- Do missing_information nezařazuj běžné administrativní nebo formulářové náležitosti, které nejsou součástí vstupu, jako je datum schůzky, jméno pracovníka, identifikace klienta, číslo spisu nebo jiné evidenční údaje, pokud jejich doplnění není výslovně požadováno uživatelem nebo není nezbytné pro odbornou použitelnost zápisu.
+- Do missing_information nezařazuj běžné administrativní nebo formulářové náležitosti, které nejsou součástí vstupu, jako je datum a čas schůzky, jméno pracovníka, identifikace klienta, číslo spisu nebo jiné evidenční údaje, pokud jejich doplnění není výslovně požadováno uživatelem nebo není nezbytné pro odbornou použitelnost daného zápisu.
 - language_suggestions má obsahovat pouze návrhy lepšího znění tam, kde byla původní formulace nejasná, nepřesná nebo odborně nevhodná.
 - Nepřidávej seznam drobných pravopisných nebo gramatických chyb.
 `.trim();
@@ -226,7 +229,7 @@ PRAVIDLO PRO PRÁCI S FÁZEMI A TYPY PODPORY
 - Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Posuzuj především samotný obsah zápisu.
 - Pokud vstup obsahuje konkrétní typy podpory bez výslovného uvedení názvu fáze podpory, přiřaď je k odpovídající fázi podpory podle pevně stanovené struktury a nevytýkej to jako chybu.
-- Nevytýkej jako chybu, že vstup pracuje přímo s typy podpory, pokud tyto typy podpory odpovídají pevně stanovené struktuře.
+- - Pokud vstup obsahuje jeden nebo více konkrétních typů podpory, které jednoznačně spadají do téže fáze podpory, považuj tuto fázi za dostatečně určenou a nevytýkej jako chybu, že není ještě samostatně výslovně pojmenována.
 - Pokud je zjevný nesoulad mezi obsahem zápisu a uvedenou fází podpory nebo typem podpory, uveď to stručně a věcně jako obsahový nebo metodický nesoulad, ne jako jazykovou chybu.
 `.trim();
 
