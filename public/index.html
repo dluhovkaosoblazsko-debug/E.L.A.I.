@@ -235,6 +235,25 @@
     </div>
 
     <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+      
+<div class="space-y-3">
+  <label for="methodology" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+    Doplňkové pokyny k AI
+  </label>
+  <textarea
+    id="methodology"
+    class="w-full h-[220px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all custom-scrollbar resize-none"
+    placeholder="Např.: Zdůrazni lhůty, ověřené podklady, návazné kroky nebo stručnější styl..."
+  ></textarea>
+  <div class="flex justify-between items-center text-[11px] text-slate-400">
+    <span>Ukládá se automaticky</span>
+    <span id="methodologyCounter">0 znaků</span>
+  </div>
+  <p class="text-[10px] text-slate-400 leading-relaxed italic">
+    Zadané pokyny model dodržuje při každém generování.
+  </p>
+</div>
+
       <div class="mt-auto pt-6 border-t border-slate-100">
         <div class="bg-indigo-50 p-4 rounded-xl">
           <h4 class="text-[10px] font-bold text-indigo-600 uppercase mb-2">Status systému</h4>
