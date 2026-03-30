@@ -313,7 +313,8 @@ function enqueueRequest(task) {
 
 function buildSystemPrompt(type, methodology) {
   const typeLabel = TYPE_LABELS[type] || TYPE_LABELS["zápis"];
-
+  const presetLabel = "Standard / Běžný režim";
+  
   let prompt = SYSTEM_PROMPT_TEMPLATE
     .replaceAll("{{PRESET_LABEL}}", presetLabel)
     .replaceAll("{{TYPE_LABEL}}", typeLabel);
