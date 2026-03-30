@@ -641,22 +641,8 @@
 
       if (type === "zápis") {
         container.appendChild(formattedCard);
-
-        if (hasItems(result.quality_check)) {
-          container.appendChild(qualityCard);
-        }
-        if (hasItems(result.recommendations)) {
-          container.appendChild(recommendationsCard);
-        }
-        if (hasItems(result.missing_information)) {
-          container.appendChild(missingInfoCard);
-        }
-        if (hasItems(result.language_suggestions)) {
-          container.appendChild(languageCard);
-        }
       } else if (type === "kazuistika") {
         container.appendChild(formattedCard);
-        
       } else if (type === "kontrola") {
         container.appendChild(qualityCard);
 
@@ -711,6 +697,10 @@ function renderError(message) {
   const currentFormattedOutput = editableOutput
     ? editableOutput.value
     : (r.formatted_output || "Bez obsahu.");
+
+  if (state.lastType === "zápis" || state.lastType === "kazuistika") {
+    return currentFormattedOutput;
+  }
 
   const asList = (arr) =>
     arr && arr.length ? arr.map((x) => `- ${x}`).join("\n") : "- Bez položek";
