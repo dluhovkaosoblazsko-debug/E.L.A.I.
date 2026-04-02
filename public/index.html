@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elektronický Laštovica</title>
+    <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -305,6 +306,7 @@
       isLoading: false,
       controller: null,
       lastResult: null,
+      lastModel: null,
       lastType: localStorage.getItem(storageKeys.lastType) || "zápis",
     };
 
@@ -486,8 +488,9 @@
       return ul;
     }
 
-    function renderResult(result, type) {
+    function renderResult(result, type, model) {
       state.lastResult = result;
+      state.lastModel = model || "neuvedeno";
       state.lastType = type;
       localStorage.setItem(storageKeys.lastType, type);
       setActiveProcessButton(type);
@@ -515,9 +518,16 @@
       badge2.className = "inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wide";
       badge2.textContent = "Výstup připraven";
 
+      
+      const badge3 = document.createElement("span");
+      badge3.className = "inline-flex items-center px-3 py-1 rounded-full bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wide";
+      badge3.textContent = `Model: ${model || "neuvedeno"}`;
+
       summary.appendChild(badge1);
       summary.appendChild(badge2);
+      summary.appendChild(badge3);
       container.appendChild(summary);
+
 
       const titlesByType = {
         zápis: {
@@ -776,7 +786,7 @@ function renderError(message) {
           throw new Error(data?.error || `Server vrátil chybu ${response.status}`);
         }
 
-        renderResult(data.result, type);
+        renderResult(data.result, type, data.model);
       } catch (error) {
         if (error.name === "AbortError") {
           renderInfo("Požadavek byl zrušen.");
