@@ -705,3 +705,39 @@ button {
     display: none;
   }
 }
+/* === Tailwind → styles.css bridge === */
+
+.bg-slate-50,
+.bg-slate-100,
+.bg-slate-200,
+.bg-white,
+.bg-\[#f8f1e7\],
+.bg-\[#f6eee2\] {
+  background: var(--surface) !important;
+}
+
+.text-slate-900,
+.text-slate-800,
+.text-slate-700 {
+  color: var(--text) !important;
+}
+
+.text-slate-500,
+.text-slate-400 {
+  color: var(--text-soft) !important;
+}
+
+.border-slate-200,
+.border-slate-100,
+.border-\[#eadfce\] {
+  border-color: var(--border) !important;
+}
+
+.bg-indigo-600,
+.bg-indigo-700 {
+  background: var(--primary) !important;
+}
+
+.hover\:bg-indigo-700:hover {
+  background: var(--primary-hover) !important;
+}
