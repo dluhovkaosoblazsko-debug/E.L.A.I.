@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const MODEL_PRIMARY = process.env.MODEL_PRIMARY || "gemini-2.5-flash-lite";
+const MODEL_PRIMARY = process.env.MODEL_PRIMARY || "gemini-2.5-flash";
 const MODEL_FALLBACK = process.env.MODEL_FALLBACK || "gemini-2.5-flash-lite";
 
 const REQUEST_QUEUE = [];
@@ -314,7 +314,7 @@ function enqueueRequest(task) {
 function buildSystemPrompt(type, methodology) {
   const typeLabel = TYPE_LABELS[type] || TYPE_LABELS["zápis"];
   const presetLabel = "Standard / Běžný režim";
-  
+
   let prompt = SYSTEM_PROMPT_TEMPLATE
     .replaceAll("{{PRESET_LABEL}}", presetLabel)
     .replaceAll("{{TYPE_LABEL}}", typeLabel);
