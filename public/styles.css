@@ -741,3 +741,92 @@ button {
 .hover\:bg-indigo-700:hover {
   background: var(--primary-hover) !important;
 }
+/* ================================
+   TAILWIND COLOR OVERRIDE (E.L.A.I.)
+   ================================ */
+
+/* ZÁKLAD STRÁNKY */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* KARTY */
+.bg-\[\#f8f1e7\],
+.bg-\[\#f6eee2\],
+.bg-white,
+.bg-slate-50,
+.bg-slate-100 {
+  background: var(--surface) !important;
+}
+
+/* TEXTY */
+.text-slate-900,
+.text-slate-800,
+.text-slate-700 {
+  color: var(--text) !important;
+}
+
+.text-slate-500,
+.text-slate-400 {
+  color: var(--text-soft) !important;
+}
+
+/* BORDER */
+.border-\[\#eadfce\],
+.border-slate-200,
+.border-slate-100 {
+  border-color: var(--border) !important;
+}
+
+/* TEXTAREA / INPUT */
+textarea,
+input {
+  background: var(--surface-strong) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* TLAČÍTKA */
+.bg-indigo-600,
+.bg-indigo-700 {
+  background: var(--primary) !important;
+}
+
+.hover\:bg-indigo-700:hover {
+  background: var(--primary-hover) !important;
+}
+
+.bg-amber-500,
+.bg-amber-600 {
+  background: #f59e0b !important; /* můžeš pak napojit na vlastní proměnnou */
+}
+/* ================================
+   SVĚTLEJŠÍ TEXTOVÁ POLE (FINAL)
+   ================================ */
+
+/* Zadání + výstup */
+textarea,
+#editableFormattedOutput {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f1f5ff !important;
+  border-color: rgba(138, 161, 255, 0.35) !important;
+}
+
+/* Placeholder text */
+textarea::placeholder {
+  color: rgba(220, 230, 255, 0.55) !important;
+}
+
+/* Scrollbar v textových polích */
+textarea::-webkit-scrollbar-thumb,
+#editableFormattedOutput::-webkit-scrollbar-thumb {
+  background: rgba(160, 180, 255, 0.35);
+}
+
+/* Fokus (klik do pole) */
+textarea:focus,
+#editableFormattedOutput:focus {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: var(--primary) !important;
+}
