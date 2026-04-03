@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 3000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL_PRIMARY = process.env.MODEL_PRIMARY || "gemini-2.5-flash";
 const MODEL_FALLBACK = process.env.MODEL_FALLBACK || "gemini-2.5-flash-lite";
+const BASIC_AUTH_USER = process.env.BASIC_AUTH_USER;
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
 
 const REQUEST_QUEUE = [];
 let isQueueRunning = false;
@@ -218,6 +220,59 @@ if (!GEMINI_API_KEY) {
 }
 
 app.use(express.json({ limit: "250kb" }));
+
+function decodeBasicAuthHeader(authHeader = "") {
+  if (!authHeader.startsWith("Basic ")) {
+    return null;
+  }
+
+  try {
+    const base64Credentials = authHeader.slice("Basic ".length).trim();
+    const decoded = Buffer.from(base64Credentials, "base64").toString("utf8");
+    const separatorIndex = decoded.indexOf(":");
+
+    if (separatorIndex === -1) {
+      return null;
+    }
+
+    return {
+      username: decoded.slice(0, separatorIndex),
+      password: decoded.slice(separatorIndex + 1)
+    };
+  } catch {
+    return null;
+  }
+}
+
+function basicAuthMiddleware(req, res, next) {
+  if (!BASIC_AUTH_USER || !BASIC_AUTH_PASSWORD) {
+    return next();
+  }
+
+  if (req.path === "/health") {
+    return next();
+  }
+
+  const credentials = decodeBasicAuthHeader(req.headers.authorization);
+
+  if (
+    credentials?.username === BASIC_AUTH_USER &&
+    credentials?.password === BASIC_AUTH_PASSWORD
+  ) {
+    return next();
+  }
+
+  res.setHeader("WWW-Authenticate", 'Basic realm="Case Guard AI"');
+  return res.status(401).send("Vyžadováno přihlášení.");
+}
+
+if (BASIC_AUTH_USER && BASIC_AUTH_PASSWORD) {
+  console.log("Basic Auth je aktivní.");
+} else if (BASIC_AUTH_USER || BASIC_AUTH_PASSWORD) {
+  console.warn("Basic Auth není aktivní: musí být nastavené BASIC_AUTH_USER i BASIC_AUTH_PASSWORD.");
+}
+
+app.use(basicAuthMiddleware);
 
 console.log("PUBLIC_DIR:", PUBLIC_DIR);
 console.log("INDEX_FILE:", INDEX_FILE);
